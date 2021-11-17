@@ -1,15 +1,17 @@
 import {makeStyles} from "@mui/styles";
-import RegisterShelter from "./RegisterShelter";
-import Header from "./components/Header";
+import Header from "./Header";
 import {CssBaseline} from "@mui/material";
-import Action from "./components/Action";
+import Action from "./Action";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 const useStyles = makeStyles((theme) => ({
     root: {
         minHeight: '100vh',
-        backgroundImage: `url(${process.env.PUBLIC_URL + '/assets/dogcat1.jpg'})`,
+        background: `url(${process.env.PUBLIC_URL + '/assets/dogcat11.jpg'})`,
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
+
     }
 }))
 const LandingPage = () => {
@@ -18,9 +20,7 @@ const LandingPage = () => {
         <div className={classes.root}>
             <CssBaseline />
             <Header/>
-            <Action/>
         </div>
-
     )
 }
 
