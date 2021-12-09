@@ -17,6 +17,7 @@ import * as React from "react";
 function RegisterShelter() {
     const [values, setValues] = useState({
         username: '',
+        email: '',
         password: '',
         confirmPassword: '',
         phoneNumber: '',
@@ -25,15 +26,16 @@ function RegisterShelter() {
     });
     let history = useHistory()
 
-    const onFinishRegister = async (values) => {
+    const onFinishRegister = async (e) => {
+        e.preventDefault()
         console.log(values)
-        let username = values.name;
-        let password = values.confirm;
+        let username = values.username;
+        let password = values.confirmPassword;
         let email = values.email;
-        let phoneNumber = values.phonenumber
+        let phoneNumber = values.phoneNumber
         let user = {username, password, email, phoneNumber};
         await AuthService.registerShelter(user)
-        history.push("/")
+        history.push("/login")
     };
 
 
@@ -91,6 +93,16 @@ function RegisterShelter() {
                                         size="small"
                                         value={values.username}
                                         onChange={handleChange('username')}
+
+                                    />
+                                    <TextField
+                                        label="Email"
+                                        id="email"
+                                        sx={{m: 1, width: '50ch'}}
+                                        color="secondary"
+                                        size="small"
+                                        value={values.email}
+                                        onChange={handleChange('email')}
 
                                     />
                                     <FormControl size="small" sx={{m: 1, width: '50ch'}} variant="outlined"

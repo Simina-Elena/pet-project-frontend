@@ -2,19 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e33f84b6-8e13-471e-8a27-cbe0fbd28448" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/RegisterShelter.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/dog.jfif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/dogcat10.jfif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/dogcat8.jfif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/dogcat9.jfif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/LandingPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/LandingPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RegisterShelter.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Action.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Action.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ImageCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ImageCard.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tailwind.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Navbar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Navbar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/RegisterShelter.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/RegisterShelter.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,6 +49,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../animeeater/frontend" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2021.2.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
@@ -88,7 +83,13 @@
       <workItem from="1636970074363" duration="648000" />
       <workItem from="1637064405185" duration="3914000" />
       <workItem from="1637075852259" duration="11072000" />
-      <workItem from="1637136428660" duration="15070000" />
+      <workItem from="1637136428660" duration="18564000" />
+      <workItem from="1637174537821" duration="2226000" />
+      <workItem from="1637219663131" duration="6085000" />
+      <workItem from="1637230271637" duration="6681000" />
+      <workItem from="1637872228352" duration="2991000" />
+      <workItem from="1638971943039" duration="11614000" />
+      <workItem from="1639038010285" duration="5756000" />
     </task>
     <servers />
   </component>

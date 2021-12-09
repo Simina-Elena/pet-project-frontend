@@ -4,7 +4,10 @@ import RegisterShelter from "./components/RegisterShelter";
 import './index.css'
 import Login from "./components/Login";
 import Layout from "./components/Layout";
+import ShelterPage from "./components/ShelterPage";
+import { atom } from "jotai";
 
+export const userAtom = atom(true);
 
 export default function App() {
     return (
@@ -13,6 +16,7 @@ export default function App() {
                 <Route exact path="/" component={LandingPage}/>
                 <Route exact path="/register/shelter" component={RegisterShelter}/>
                 <Route exact path="/login" component={Login}/>
+                <Route exact path="/shelter-page" component={ShelterPage}/>
             </Switch>
         </Layout>
 

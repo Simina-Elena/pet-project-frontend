@@ -1,16 +1,14 @@
 import {AppBar, Box, Button, IconButton, Toolbar, Typography, Link as link} from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import {makeStyles} from "@mui/styles";
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
+import AuthService from "../services/auth.service";
+import {useEffect, useState} from "react";
+import {useAtom} from "jotai";
+import {userAtom} from "../App";
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        fontFamily: 'Nunito',
-    },
+
     appbar: {
         background: '#E4BAD4 !important',
         boxShadow: 'none'
@@ -24,28 +22,11 @@ const useStyles = makeStyles((theme) => ({
         color: '#f0e6ef',
 
     },
-    icon: {
-        color: '#fff',
-        fontSize: '2rem',
-    },
+
     colorText: {
         color: '#9c27b0',
     },
-    colorText2: {
-        color: '#f0e6ef'
-    },
-    container: {
-        textAlign: 'center',
-    },
-    title: {
-        color: '#fff',
-        fontSize: '4.5rem',
-        paddingRight: '30px'
-    },
-    goDown: {
-        color: "#fff",
-        fontSize: '4rem',
-    },
+
     buttonHover: {
         '&:hover': {
             backgroundColor: '#E4BAD4',
@@ -67,6 +48,15 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Navbar() {
     const classes = useStyles()
+    const [user, setUser] = useAtom(userAtom);
+    const history = useHistory()
+
+
+    const handleLogOut = () => {
+        AuthService.logout();
+        history.push("/login");
+        setUser(false)
+    };
 
     return (
         <div>
@@ -90,7 +80,21 @@ export default function Navbar() {
                             </Link>
                         </Typography>
 
-                        <Link to={{pathname: '/login'}} className={classes.buttonHover}>Login</Link>
+                            {user ? (
+                                <Button sx={{'&:hover': {
+                                        backgroundColor: '#E4BAD4',
+                                        color: '#9c89b8',
+                                    },
+                                    fontFamily: 'Nunito',
+                                    color: '#fff',
+                                    fontWeight: 'bold',
+                                    fontSize: 'medium'}} onClick={handleLogOut}>
+                                    Log out
+                                </Button>
+                            ) :
+                            ( <Link to={{pathname: '/login'}} className={classes.buttonHover}>Login</Link>)}
+
+
                     </Toolbar>
                 </AppBar>
             </Box>
