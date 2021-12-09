@@ -7,7 +7,7 @@ import {
     Box,
     Button, Checkbox,
     Container,
-    CssBaseline, FormControlLabel, IconButton, Modal,
+    CssBaseline, FormControlLabel, IconButton, ImageList, ImageListItem, Modal,
     Paper,
     Stack, Switch,
     Table, TableBody, TableCell,
@@ -20,6 +20,7 @@ import {visuallyHidden} from '@mui/utils';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import * as React from "react";
+import {useHistory} from "react-router-dom";
 
 
 function createData(name, gender, age, race, color) {
@@ -112,7 +113,7 @@ function EnhancedTableHead(props) {
                         checked={rowCount > 0 && numSelected === rowCount}
                         onChange={onSelectAllClick}
                         inputProps={{
-                            'aria-label': 'select all desserts',
+                            'aria-label': 'select all pets',
                         }}
                     />
                 </TableCell>
@@ -153,6 +154,10 @@ EnhancedTableHead.propTypes = {
 
 const EnhancedTableToolbar = (props) => {
     const {numSelected} = props;
+    console.log(numSelected)
+    const handleDeletePet = () => {
+
+    }
 
     return (
         <Toolbar
@@ -187,7 +192,7 @@ const EnhancedTableToolbar = (props) => {
 
             {numSelected > 0 ? (
                 <Tooltip title="Delete">
-                    <IconButton>
+                    <IconButton onClick={handleDeletePet}>
                         <DeleteIcon/>
                     </IconButton>
                 </Tooltip>
@@ -225,6 +230,7 @@ export default function ShelterPage() {
     const username = AuthService.getCurrentUser().username
     const [pets, setPets] = useState([])
     let rows = []
+    const history = useHistory()
 
 
     const getShelter = async () => {
@@ -316,16 +322,12 @@ export default function ShelterPage() {
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-
-    //Pet modal variables
+    //Pet modal
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [gender, setGender] = useState();
 
-    const handleChangeGender = (event) => {
-        setGender(event.target.value);
-    };
     const genders = [
         {
             value: 'FEMALE',
@@ -342,7 +344,6 @@ export default function ShelterPage() {
     ];
     const [values, setValues] = useState({
         name: '',
-        gender: '',
         age: '',
         race: '',
         color: '',
@@ -354,17 +355,60 @@ export default function ShelterPage() {
         console.log(values)
     };
 
+    const handleChangeGender = (event) => {
+        setGender(event.target.value);
+        console.log(gender)
+    };
+
+    const onSubmitAddPet = async (e) => {
+        e.preventDefault()
+        console.log(values)
+        let name = values.name
+        let age = values.age
+        let color = values.color
+        let race = values.race
+        let description = values.description
+        await axios.post(`http://localhost:8080/api/pet/add/${AuthService.getCurrentUser().id}`,
+            {
+                name,
+                gender,
+                age,
+                color,
+                race,
+                description
+            })
+        handleClose()
+        await getPets()
+    }
+
+    const photos = [
+        {
+            img: 'https://www.peggyadams.org/sites/default/files/images/How%20to%20Help/Capital%20Campaign/lobby.jpg',
+            title: 'Shelter1',
+        },
+        {
+            img: 'https://www.careermatch.com/job-prep/wp-content/uploads/sites/2/2017/11/Animal_Shelter_Worker_Profile_Image.jpg',
+            title: 'Shelter2',
+        },]
     return (
         <div>
             <CssBaseline/>
             <Container maxWidth="md">
-                <img
-                    src={"https://d2fdt3nym3n14p.cloudfront.net/venue/3094/gallery/13009/conversions/121113237_811315479645435_5054498167316426209_o-big.jpg"}
-                    alt={"https://d2fdt3nym3n14p.cloudfront.net/venue/3094/gallery/13009/conversions/121113237_811315479645435_5054498167316426209_o-big.jpg"}
-                />
-                <Box sx={{height: '90vh'}}>
+                <ImageList sx={{width: 'auto', height: 250, padding: '10px'}} cols={2} rowHeight={350}>
+                    {photos.map((item) => (
+                        <ImageListItem key={item.img}>
+                            <img
+                                src={item.img}
+                                srcSet={item.img}
+                                alt={item.title}
+                                loading="lazy"
+                            />
+                        </ImageListItem>
+                    ))}
+                </ImageList>
+                <Box sx={{height: '90vh', padding: '10px'}}>
                     <Typography variant="h2" align="center" bgcolor='#F0E6EF'>{username}</Typography>
-                    <Stack direction="row" spacing={2}>
+                    <Stack direction="row" spacing={2} padding='10px'>
                         <Button color="secondary" variant="contained" onClick={handleOpen}>Add pet</Button>
                         {/*AddPet modal start*/}
                         <Modal
@@ -377,7 +421,8 @@ export default function ShelterPage() {
                                 <Typography id="modal-modal-title" variant="h6" component="h2">
                                     Add pet
                                 </Typography>
-                                <Box component="form" sx={{display: 'flex', flexWrap: 'wrap'}}>
+                                <Box onSubmit={onSubmitAddPet} component="form"
+                                     sx={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
                                     <TextField
                                         label="name"
                                         id="name"
@@ -388,7 +433,7 @@ export default function ShelterPage() {
                                         onChange={handleChange('name')}
                                     />
                                     <TextField
-                                        id="select-gender"
+                                        id="gender"
                                         select
                                         label="gender"
                                         value={gender}
@@ -430,6 +475,15 @@ export default function ShelterPage() {
                                         size="small"
                                         value={values.color}
                                         onChange={handleChange('color')}
+                                    />
+                                    <TextField
+                                        label="description"
+                                        id="description"
+                                        sx={{m: 1, width: '50ch'}}
+                                        color="secondary"
+                                        size="small"
+                                        value={values.description}
+                                        onChange={handleChange('description')}
                                     />
                                     <Button sx={{margin: 'auto', width: 'min-content', m: 1}}
                                             type="submit"

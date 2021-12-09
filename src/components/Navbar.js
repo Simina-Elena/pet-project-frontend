@@ -1,4 +1,4 @@
-import {AppBar, Box, Button, IconButton, Toolbar, Typography, Link as link} from "@mui/material";
+import {AppBar, Box, Button, IconButton, Toolbar, Typography, Link as link, Stack} from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import {makeStyles} from "@mui/styles";
 import {Link, useHistory} from "react-router-dom";
@@ -81,16 +81,28 @@ export default function Navbar() {
                         </Typography>
 
                             {user ? (
-                                <Button sx={{'&:hover': {
-                                        backgroundColor: '#E4BAD4',
-                                        color: '#9c89b8',
-                                    },
-                                    fontFamily: 'Nunito',
-                                    color: '#fff',
-                                    fontWeight: 'bold',
-                                    fontSize: 'medium'}} onClick={handleLogOut}>
-                                    Log out
-                                </Button>
+                                <Stack direction="row" spacing={2} padding='10px'>
+                                    <Button sx={{'&:hover': {
+                                                backgroundColor: '#E4BAD4',
+                                                color: '#9c89b8',
+                                            }, fontFamily: 'Nunito',
+                                        color: '#fff',
+                                        fontWeight: 'bold',
+                                        fontSize: 'medium'}} onClick={() => history.push('/shelter-page')}>
+                                        Profile
+                                    </Button>
+                                    <Button sx={{'&:hover': {
+                                            backgroundColor: '#E4BAD4',
+                                            color: '#9c89b8',
+                                        },
+                                        fontFamily: 'Nunito',
+                                        color: '#fff',
+                                        fontWeight: 'bold',
+                                        fontSize: 'medium'}} onClick={handleLogOut}>
+                                        Log out
+                                    </Button>
+                                </Stack>
+
                             ) :
                             ( <Link to={{pathname: '/login'}} className={classes.buttonHover}>Login</Link>)}
 
