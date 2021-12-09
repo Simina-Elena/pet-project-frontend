@@ -227,18 +227,16 @@ const style = {
 
 export default function ShelterPage() {
     const [user, setUser] = useState({})
-    const username = AuthService.getCurrentUser().username
     const [pets, setPets] = useState([])
     let rows = []
     const history = useHistory()
 
 
     const getShelter = async () => {
-        const data = await axios.get(`http://localhost:8080/api/shelter/profile/${username}`,
+        const data = await axios.get(`http://localhost:8080/api/shelter/profile/${AuthService.getCurrentUser().username}`,
             {headers: authHeader()})
         const resp = await data.data
         console.log(resp)
-        console.log(username)
         setUser(resp)
     }
 
@@ -324,9 +322,7 @@ export default function ShelterPage() {
 
     //Pet modal
     const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-    const [gender, setGender] = useState();
+    let [gender, setGender] = useState();
 
     const genders = [
         {
@@ -349,7 +345,15 @@ export default function ShelterPage() {
         color: '',
         description: '',
     });
-
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => {
+        values.race = ''
+        values.age = ''
+        values.name = ''
+        values.description = ''
+        values.color = ''
+        setOpen(false)
+    };
     const handleChange = (prop) => (event) => {
         setValues({...values, [prop]: event.target.value});
         console.log(values)
@@ -407,7 +411,7 @@ export default function ShelterPage() {
                     ))}
                 </ImageList>
                 <Box sx={{height: '90vh', padding: '10px'}}>
-                    <Typography variant="h2" align="center" bgcolor='#F0E6EF'>{username}</Typography>
+                    <Typography variant="h2" align="center" bgcolor='#F0E6EF'>{AuthService.getCurrentUser().username}</Typography>
                     <Stack direction="row" spacing={2} padding='10px'>
                         <Button color="secondary" variant="contained" onClick={handleOpen}>Add pet</Button>
                         {/*AddPet modal start*/}

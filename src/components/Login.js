@@ -34,7 +34,7 @@ function Login() {
         let user = {username, password};
         await AuthService.login(user)
         setUserLogged(true)
-        history.push("/")
+        history.push("/shelter-page")
     };
 
 
