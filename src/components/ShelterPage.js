@@ -20,210 +20,9 @@ import {visuallyHidden} from '@mui/utils';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import * as React from "react";
-import {useHistory} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
+import PetDetails from "./PetDetails";
 
-
-function createData(name, gender, age, race, color) {
-    return {
-        name,
-        gender,
-        age,
-        race,
-        color,
-    };
-}
-
-function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
-}
-
-function getComparator(order, orderBy) {
-    return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-// This method is created for cross-browser compatibility, if you don't
-// need to support IE11, you can use Array.prototype.sort() directly
-function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) {
-            return order;
-        }
-        return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-}
-
-const headCells = [
-    {
-        id: 'name',
-        numeric: false,
-        disablePadding: true,
-        label: 'Name',
-    },
-    {
-        id: 'gender',
-        numeric: true,
-        disablePadding: false,
-        label: 'Gender',
-    },
-    {
-        id: 'age',
-        numeric: true,
-        disablePadding: false,
-        label: 'Age',
-    },
-    {
-        id: 'race',
-        numeric: true,
-        disablePadding: false,
-        label: 'Race',
-    },
-    {
-        id: 'color',
-        numeric: true,
-        disablePadding: false,
-        label: 'Color',
-    },
-];
-
-function EnhancedTableHead(props) {
-    const {onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort} =
-        props;
-    const createSortHandler = (property) => (event) => {
-        onRequestSort(event, property);
-    };
-
-    return (
-        <TableHead>
-            <TableRow>
-                <TableCell padding="checkbox">
-                    <Checkbox
-                        color="primary"
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{
-                            'aria-label': 'select all pets',
-                        }}
-                    />
-                </TableCell>
-                {headCells.map((headCell) => (
-                    <TableCell
-                        key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'left'}
-                        padding={headCell.disablePadding ? 'none' : 'normal'}
-                        sortDirection={orderBy === headCell.id ? order : false}
-                    >
-                        <TableSortLabel
-                            active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order : 'asc'}
-                            onClick={createSortHandler(headCell.id)}
-                        >
-                            {headCell.label}
-                            {orderBy === headCell.id ? (
-                                <Box component="span" sx={visuallyHidden}>
-                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                </Box>
-                            ) : null}
-                        </TableSortLabel>
-                    </TableCell>
-                ))}
-            </TableRow>
-        </TableHead>
-    );
-}
-
-EnhancedTableHead.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-    onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
-    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-    orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired,
-};
-
-const EnhancedTableToolbar = (props) => {
-    const {numSelected} = props;
-    console.log(numSelected)
-    const handleDeletePet = () => {
-
-    }
-
-    return (
-        <Toolbar
-            sx={{
-                pl: {sm: 2},
-                pr: {xs: 1, sm: 1},
-                ...(numSelected > 0 && {
-                    bgcolor: (theme) =>
-                        alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-                }),
-            }}
-        >
-            {numSelected > 0 ? (
-                <Typography
-                    sx={{flex: '1 1 100%'}}
-                    color="inherit"
-                    variant="subtitle1"
-                    component="div"
-                >
-                    {numSelected} selected
-                </Typography>
-            ) : (
-                <Typography
-                    sx={{flex: '1 1 100%'}}
-                    variant="h6"
-                    id="tableTitle"
-                    component="div"
-                >
-                    Pets
-                </Typography>
-            )}
-
-            {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton onClick={handleDeletePet}>
-                        <DeleteIcon/>
-                    </IconButton>
-                </Tooltip>
-            ) : (
-                <Tooltip title="Filter list">
-                    <IconButton>
-                        <FilterListIcon/>
-                    </IconButton>
-                </Tooltip>
-            )}
-        </Toolbar>
-    );
-};
-
-EnhancedTableToolbar.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-};
-
-//AddPet modal style
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-    '& .MuiTextField-root': {m: 1, width: '25ch'}
-};
 
 export default function ShelterPage() {
     const [user, setUser] = useState({})
@@ -255,7 +54,7 @@ export default function ShelterPage() {
     }, [])
 
     pets.forEach((pet) => {
-        rows.push(createData(pet.name, pet.gender, pet.age, pet.race, pet.color))
+        rows.push(createData(pet.id, pet.name, pet.gender, pet.age, pet.race, pet.color))
     })
 
     //table variables
@@ -274,7 +73,7 @@ export default function ShelterPage() {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = rows.map((n) => n.name);
+            const newSelecteds = rows.map((n) => n.id);
             setSelected(newSelecteds);
             return;
         }
@@ -283,6 +82,7 @@ export default function ShelterPage() {
 
     const handleClick = (event, name) => {
         const selectedIndex = selected.indexOf(name);
+        console.log(selectedIndex)
         let newSelected = [];
 
         if (selectedIndex === -1) {
@@ -299,6 +99,7 @@ export default function ShelterPage() {
         }
 
         setSelected(newSelected);
+        console.log(selected)
     };
 
     const handleChangePage = (event, newPage) => {
@@ -314,7 +115,7 @@ export default function ShelterPage() {
         setDense(event.target.checked);
     };
 
-    const isSelected = (name) => selected.indexOf(name) !== -1;
+    const isSelected = (id) => selected.indexOf(id) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
@@ -339,6 +140,7 @@ export default function ShelterPage() {
         },
     ];
     const [values, setValues] = useState({
+        id: '',
         name: '',
         age: '',
         race: '',
@@ -347,6 +149,7 @@ export default function ShelterPage() {
     });
     const handleOpen = () => setOpen(true);
     const handleClose = () => {
+        values.id = ''
         values.race = ''
         values.age = ''
         values.name = ''
@@ -394,6 +197,226 @@ export default function ShelterPage() {
             img: 'https://www.careermatch.com/job-prep/wp-content/uploads/sites/2/2017/11/Animal_Shelter_Worker_Profile_Image.jpg',
             title: 'Shelter2',
         },]
+
+
+    function createData(id, name, gender, age, race, color) {
+        return {
+            id,
+            name,
+            gender,
+            age,
+            race,
+            color,
+        };
+    }
+
+    function descendingComparator(a, b, orderBy) {
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+        return 0;
+    }
+
+    function getComparator(order, orderBy) {
+        return order === 'desc'
+            ? (a, b) => descendingComparator(a, b, orderBy)
+            : (a, b) => -descendingComparator(a, b, orderBy);
+    }
+
+// This method is created for cross-browser compatibility, if you don't
+// need to support IE11, you can use Array.prototype.sort() directly
+    function stableSort(array, comparator) {
+        const stabilizedThis = array.map((el, index) => [el, index]);
+        stabilizedThis.sort((a, b) => {
+            const order = comparator(a[0], b[0]);
+            if (order !== 0) {
+                return order;
+            }
+            return a[1] - b[1];
+        });
+        return stabilizedThis.map((el) => el[0]);
+    }
+
+    const headCells = [
+        {
+            id: 'id',
+            numeric: false,
+            disablePadding: true,
+            label: 'Registration Number',
+        },
+        {
+            id: 'name',
+            numeric: true,
+            disablePadding: true,
+            label: 'Name',
+        },
+        {
+            id: 'gender',
+            numeric: true,
+            disablePadding: false,
+            label: 'Gender',
+        },
+        {
+            id: 'age',
+            numeric: true,
+            disablePadding: false,
+            label: 'Age',
+        },
+        {
+            id: 'race',
+            numeric: true,
+            disablePadding: false,
+            label: 'Race',
+        },
+        {
+            id: 'color',
+            numeric: true,
+            disablePadding: false,
+            label: 'Color',
+        },
+    ];
+
+    function EnhancedTableHead(props) {
+        const {onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort} =
+            props;
+        const createSortHandler = (property) => (event) => {
+            onRequestSort(event, property);
+        };
+
+        return (
+            <TableHead>
+                <TableRow>
+                    <TableCell padding="checkbox">
+                        <Checkbox
+                            color="primary"
+                            indeterminate={numSelected > 0 && numSelected < rowCount}
+                            checked={rowCount > 0 && numSelected === rowCount}
+                            onChange={onSelectAllClick}
+                            inputProps={{
+                                'aria-label': 'select all pets',
+                            }}
+                        />
+                    </TableCell>
+                    {headCells.map((headCell) => (
+                        <TableCell
+                            key={headCell.id}
+                            align={headCell.numeric ? 'right' : 'left'}
+                            padding={headCell.disablePadding ? 'none' : 'normal'}
+                            sortDirection={orderBy === headCell.id ? order : false}
+                        >
+                            <TableSortLabel
+                                active={orderBy === headCell.id}
+                                direction={orderBy === headCell.id ? order : 'asc'}
+                                onClick={createSortHandler(headCell.id)}
+                            >
+                                {headCell.label}
+                                {orderBy === headCell.id ? (
+                                    <Box component="span" sx={visuallyHidden}>
+                                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                    </Box>
+                                ) : null}
+                            </TableSortLabel>
+                        </TableCell>
+                    ))}
+                </TableRow>
+            </TableHead>
+        );
+    }
+
+    EnhancedTableHead.propTypes = {
+        numSelected: PropTypes.number.isRequired,
+        onRequestSort: PropTypes.func.isRequired,
+        onSelectAllClick: PropTypes.func.isRequired,
+        order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+        orderBy: PropTypes.string.isRequired,
+        rowCount: PropTypes.number.isRequired,
+    };
+
+    const EnhancedTableToolbar = (props) => {
+        const {numSelected} = props;
+
+        const handleDeletePet =  () => {
+            selected.forEach((petId) => axios.delete(`http://localhost:8080/api/pet/delete/${petId}`))
+            getPets()
+            setSelected([])
+        }
+
+        return (
+            <Toolbar
+                sx={{
+                    pl: {sm: 2},
+                    pr: {xs: 1, sm: 1},
+                    ...(numSelected > 0 && {
+                        bgcolor: (theme) =>
+                            alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+                    }),
+                }}
+            >
+                {numSelected > 0 ? (
+                    <Typography
+                        sx={{flex: '1 1 100%'}}
+                        color="inherit"
+                        variant="subtitle1"
+                        component="div"
+                    >
+                        {numSelected} selected
+                    </Typography>
+                ) : (
+                    <Typography
+                        sx={{flex: '1 1 100%'}}
+                        variant="h6"
+                        id="tableTitle"
+                        component="div"
+                    >
+                        Pets
+                    </Typography>
+                )}
+
+                {numSelected > 0 ? (
+                    <Tooltip title="Delete">
+                        <IconButton onClick={handleDeletePet}>
+                            <DeleteIcon/>
+                        </IconButton>
+                    </Tooltip>
+                ) : (
+                    <Tooltip title="Filter list">
+                        <IconButton>
+                            <FilterListIcon/>
+                        </IconButton>
+                    </Tooltip>
+                )}
+
+
+            </Toolbar>
+        );
+    };
+
+    EnhancedTableToolbar.propTypes = {
+        numSelected: PropTypes.number.isRequired,
+    };
+
+//AddPet modal style
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+        '& .MuiTextField-root': {m: 1, width: '25ch'}
+    };
+
+
+    function handleDetailsPetOnClick() {
+        history.push("/pet-details")
+    }
+
     return (
         <div>
             <CssBaseline/>
@@ -410,8 +433,9 @@ export default function ShelterPage() {
                         </ImageListItem>
                     ))}
                 </ImageList>
-                <Box sx={{height: '90vh', padding: '10px'}}>
-                    <Typography variant="h2" align="center" bgcolor='#F0E6EF'>{AuthService.getCurrentUser().username}</Typography>
+                <Box sx={{padding: '10px'}}>
+                    <Typography variant="h2" align="center"
+                                bgcolor='#F0E6EF'>{AuthService.getCurrentUser().username}</Typography>
                     <Stack direction="row" spacing={2} padding='10px'>
                         <Button color="secondary" variant="contained" onClick={handleOpen}>Add pet</Button>
                         {/*AddPet modal start*/}
@@ -518,22 +542,20 @@ export default function ShelterPage() {
                                     rowCount={rows.length}
                                 />
                                 <TableBody>
-                                    {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-                 rows.slice().sort(getComparator(order, orderBy)) */}
+
                                     {stableSort(rows, getComparator(order, orderBy))
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         .map((row, index) => {
-                                            const isItemSelected = isSelected(row.name);
+                                            const isItemSelected = isSelected(row.id);
                                             const labelId = `enhanced-table-checkbox-${index}`;
 
                                             return (
                                                 <TableRow
                                                     hover
-                                                    onClick={(event) => handleClick(event, row.name)}
                                                     role="checkbox"
                                                     aria-checked={isItemSelected}
                                                     tabIndex={-1}
-                                                    key={row.name}
+                                                    key={row.id}
                                                     selected={isItemSelected}
                                                 >
                                                     <TableCell padding="checkbox">
@@ -543,6 +565,8 @@ export default function ShelterPage() {
                                                             inputProps={{
                                                                 'aria-labelledby': labelId,
                                                             }}
+                                                            onClick={(event) => handleClick(event, row.id)}
+
                                                         />
                                                     </TableCell>
                                                     <TableCell
@@ -551,8 +575,9 @@ export default function ShelterPage() {
                                                         scope="row"
                                                         padding="none"
                                                     >
-                                                        {row.name}
+                                                        {row.id}
                                                     </TableCell>
+                                                    <TableCell align="right"><Link to={{pathname: "/pet-details", state: row.id}}>{row.name}</Link></TableCell>
                                                     <TableCell align="right">{row.gender}</TableCell>
                                                     <TableCell align="right">{row.age}</TableCell>
                                                     <TableCell align="right">{row.race}</TableCell>
