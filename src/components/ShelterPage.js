@@ -25,11 +25,49 @@ import PetDetails from "./PetDetails";
 
 
 export default function ShelterPage() {
-    const [user, setUser] = useState({})
-    const [pets, setPets] = useState([])
     let rows = []
     const history = useHistory()
-
+    const [user, setUser] = useState({})
+    const [pets, setPets] = useState([])
+    const [order, setOrder] = useState('asc');
+    const [orderBy, setOrderBy] = useState('name');
+    const [selected, setSelected] = useState([]);
+    const [page, setPage] = useState(0);
+    const [dense, setDense] = useState(false);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    //Pet modal variables
+    const [open, setOpen] = useState(false);
+    let [gender, setGender] = useState();
+    const [values, setValues] = useState({
+        name: '',
+        age: '',
+        race: '',
+        color: '',
+        description: '',
+    });
+    const genders = [
+        {
+            value: 'FEMALE',
+            label: 'F',
+        },
+        {
+            value: 'MALE',
+            label: 'M',
+        },
+        {
+            value: 'OTHER',
+            label: 'OTHER',
+        },
+    ];
+    const photos = [
+        {
+            img: 'https://www.peggyadams.org/sites/default/files/images/How%20to%20Help/Capital%20Campaign/lobby.jpg',
+            title: 'Shelter1',
+        },
+        {
+            img: 'https://www.careermatch.com/job-prep/wp-content/uploads/sites/2/2017/11/Animal_Shelter_Worker_Profile_Image.jpg',
+            title: 'Shelter2',
+        },]
 
     const getShelter = async () => {
         const data = await axios.get(`http://localhost:8080/api/shelter/profile/${AuthService.getCurrentUser().username}`,
@@ -56,14 +94,6 @@ export default function ShelterPage() {
     pets.forEach((pet) => {
         rows.push(createData(pet.id, pet.name, pet.gender, pet.age, pet.race, pet.color))
     })
-
-    //table variables
-    const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('name');
-    const [selected, setSelected] = useState([]);
-    const [page, setPage] = useState(0);
-    const [dense, setDense] = useState(false);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -121,35 +151,9 @@ export default function ShelterPage() {
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-    //Pet modal
-    const [open, setOpen] = useState(false);
-    let [gender, setGender] = useState();
-
-    const genders = [
-        {
-            value: 'FEMALE',
-            label: 'F',
-        },
-        {
-            value: 'MALE',
-            label: 'M',
-        },
-        {
-            value: 'OTHER',
-            label: 'OTHER',
-        },
-    ];
-    const [values, setValues] = useState({
-        id: '',
-        name: '',
-        age: '',
-        race: '',
-        color: '',
-        description: '',
-    });
     const handleOpen = () => setOpen(true);
+
     const handleClose = () => {
-        values.id = ''
         values.race = ''
         values.age = ''
         values.name = ''
@@ -157,6 +161,7 @@ export default function ShelterPage() {
         values.color = ''
         setOpen(false)
     };
+
     const handleChange = (prop) => (event) => {
         setValues({...values, [prop]: event.target.value});
         console.log(values)
@@ -187,17 +192,6 @@ export default function ShelterPage() {
         handleClose()
         await getPets()
     }
-
-    const photos = [
-        {
-            img: 'https://www.peggyadams.org/sites/default/files/images/How%20to%20Help/Capital%20Campaign/lobby.jpg',
-            title: 'Shelter1',
-        },
-        {
-            img: 'https://www.careermatch.com/job-prep/wp-content/uploads/sites/2/2017/11/Animal_Shelter_Worker_Profile_Image.jpg',
-            title: 'Shelter2',
-        },]
-
 
     function createData(id, name, gender, age, race, color) {
         return {
@@ -245,12 +239,12 @@ export default function ShelterPage() {
             id: 'id',
             numeric: false,
             disablePadding: true,
-            label: 'Registration Number',
+            label: 'Registration No.'
         },
         {
             id: 'name',
             numeric: true,
-            disablePadding: true,
+            disablePadding: false,
             label: 'Name',
         },
         {
@@ -338,7 +332,7 @@ export default function ShelterPage() {
     const EnhancedTableToolbar = (props) => {
         const {numSelected} = props;
 
-        const handleDeletePet =  () => {
+        const handleDeletePet = () => {
             selected.forEach((petId) => axios.delete(`http://localhost:8080/api/pet/delete/${petId}`))
             getPets()
             setSelected([])
@@ -412,14 +406,8 @@ export default function ShelterPage() {
         '& .MuiTextField-root': {m: 1, width: '25ch'}
     };
 
-
-    function handleDetailsPetOnClick() {
-        history.push("/pet-details")
-    }
-
     return (
         <div>
-            <CssBaseline/>
             <Container maxWidth="md">
                 <ImageList sx={{width: 'auto', height: 250, padding: '10px'}} cols={2} rowHeight={350}>
                     {photos.map((item) => (
@@ -435,9 +423,11 @@ export default function ShelterPage() {
                 </ImageList>
                 <Box sx={{padding: '10px'}}>
                     <Typography variant="h2" align="center"
-                                bgcolor='#F0E6EF'>{AuthService.getCurrentUser().username}</Typography>
+                                bgcolor='#F0E6EF' fontFamily='Lora'
+                                fontWeight='400'>{AuthService.getCurrentUser().username}</Typography>
                     <Stack direction="row" spacing={2} padding='10px'>
-                        <Button color="secondary" variant="contained" onClick={handleOpen}>Add pet</Button>
+                        <Button color="secondary" variant="contained" sx={{fontFamily:'Lora', fontWeight: '600'}}
+                                onClick={handleOpen}>Add pet</Button>
                         {/*AddPet modal start*/}
                         <Modal
                             open={open}
@@ -446,11 +436,13 @@ export default function ShelterPage() {
                             aria-describedby="modal-modal-description"
                         >
                             <Box sx={style}>
-                                <Typography id="modal-modal-title" variant="h6" component="h2">
+                                <img width='30px' className="mr-2" src="/assets/gender.png" align='left'/>
+                                <Typography id="modal-modal-title" variant="h6" component="h2" mb='10px'
+                                            fontFamily='Lora' fontWeight='600'>
                                     Add pet
                                 </Typography>
                                 <Box onSubmit={onSubmitAddPet} component="form"
-                                     sx={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
+                                     sx={{display: 'table', textAlign:'center'}}>
                                     <TextField
                                         label="name"
                                         id="name"
@@ -513,7 +505,8 @@ export default function ShelterPage() {
                                         value={values.description}
                                         onChange={handleChange('description')}
                                     />
-                                    <Button sx={{margin: 'auto', width: 'min-content', m: 1}}
+                                    <Button sx={{margin: 'auto', mt:'20px', display: 'table-cell', verticalAlign: 'bottom',
+                                        fontFamily: 'Lora', fontWeight: '600'}}
                                             type="submit"
                                             color="secondary" variant="contained"
                                     >
@@ -523,7 +516,8 @@ export default function ShelterPage() {
                             </Box>
                         </Modal>
                         {/*AddPet modal end*/}
-                        <Button color="secondary" variant="contained">Add activity</Button>
+                        <Button color="secondary" variant="contained"
+                                sx={{fontFamily:'Lora', fontWeight: '600'}}>Add activity</Button>
                     </Stack>
                     <Paper sx={{width: '100%', mb: 2}}>
                         <EnhancedTableToolbar numSelected={selected.length}/>
@@ -584,6 +578,7 @@ export default function ShelterPage() {
                                                     <TableCell align="right">{row.color}</TableCell>
                                                 </TableRow>
                                             );
+                                            //end return
                                         })}
                                     {emptyRows > 0 && (
                                         <TableRow
@@ -612,7 +607,6 @@ export default function ShelterPage() {
                         label="Dense padding"
                     />
                 </Box>
-
             </Container>
         </div>
     )

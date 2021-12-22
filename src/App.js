@@ -17,7 +17,7 @@ export default function App() {
                 <Route exact path="/" component={LandingPage}/>
                 <Route exact path="/register/shelter" component={RegisterShelter}/>
                 <Route exact path="/login" component={Login}/>
-                <Route exact path="/shelter-page" component={ShelterPage}/>
+                <Route exact path="/dashboard" component={ShelterPage}/>
                 <Route exact path="/pet-details" component={PetDetails}/>
             </Switch>
         </Layout>

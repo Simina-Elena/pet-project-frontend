@@ -1,5 +1,5 @@
 import {makeStyles} from "@mui/styles";
-import { Button, Collapse, IconButton, Stack} from "@mui/material";
+import {Button, Collapse, IconButton, Stack} from "@mui/material";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
@@ -63,9 +63,11 @@ export default function Header() {
                     <h1 className={classes.title}>Welcome</h1>
                     <Stack direction="row" spacing={2}>
                         <Link to={{pathname: "/register/shelter"}}>
-                            <Button color='secondary' variant="contained">Register as shelter</Button>
+                            <Button color='secondary' variant="contained"
+                                    sx={{fontFamily: 'Lora', fontWeight: '600'}}>Register as shelter</Button>
                         </Link>
-                        <Button color="secondary" variant="contained">Register as visitor</Button>
+                        <Button color="secondary" variant="contained"
+                                sx={{fontFamily: 'Lora', fontWeight: '600'}}>Register as visitor</Button>
                     </Stack>
                     {/*<Scroll to="action" smooth={true}>*/}
                     {/*    <IconButton>*/}

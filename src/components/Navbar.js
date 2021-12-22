@@ -88,8 +88,8 @@ export default function Navbar() {
                                             }, fontFamily: 'Nunito',
                                         color: '#fff',
                                         fontWeight: 'bold',
-                                        fontSize: 'medium'}} onClick={() => history.push('/shelter-page')}>
-                                        Profile
+                                        fontSize: 'medium'}} onClick={() => history.push('/dashboard')}>
+                                        Dashboard
                                     </Button>
                                     <Button sx={{'&:hover': {
                                             backgroundColor: '#E4BAD4',

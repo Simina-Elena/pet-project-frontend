@@ -13,12 +13,10 @@ import {
 import AuthService from "../services/auth.service";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import * as React from "react";
-import {useAtom} from "jotai";
-import {userAtom} from "../App";
+
 
 function Login() {
     let history = useHistory()
-    const [userLogged, setUserLogged] = useAtom(userAtom)
 
     const [values, setValues] = useState({
         username: '',
@@ -33,8 +31,7 @@ function Login() {
         let password = values.password;
         let user = {username, password};
         await AuthService.login(user)
-        setUserLogged(true)
-        history.push("/shelter-page")
+        history.push("/dashboard")
     };
 
 
@@ -54,7 +51,6 @@ function Login() {
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
-
 
     return (
         <div className="flex items-center p-20 ">
