@@ -8,7 +8,7 @@ import {
     CardMedia,
     Container,
     createTheme,
-    CssBaseline, Modal, TextField,
+    CssBaseline, FormControl, InputLabel, MenuItem, Modal, Select, TextField,
     Typography
 } from "@mui/material";
 import * as React from "react";
@@ -36,8 +36,7 @@ export default function PetDetails(props) {
     const petId = props.location.state
     const [pet, setPet] = useState({})
     const joinedDate = pet.joinedDate
-    let [gender, setGender] = useState();
-    let [adopted, setAdopted] = useState();
+    const [gender, setGender] = useState('');
     const [open, setOpen] = useState(false);
     const [values, setValues] = useState({
         name: '',
@@ -45,35 +44,19 @@ export default function PetDetails(props) {
         race: '',
         color: '',
         description: '',
-        joinedDate: joinedDate,
-        adopted: ''
     });
 
     const genders = [
         {
             value: 'FEMALE',
-            label: 'F',
+            label: 'female',
         },
         {
             value: 'MALE',
-            label: 'M',
+            label: 'male',
         },
-        {
-            value: 'OTHER',
-            label: 'OTHER',
-        },
-    ];
 
-    const adoptedValues = [
-        {
-            value: 'TRUE',
-            label: 'yes'
-        },
-        {
-            value: 'FALSE',
-            label: 'not yet'
-        }
-    ]
+    ];
 
     const fetchPet = async () => {
         const data = await axios.get(`http://localhost:8080/api/pet/${petId}`)
@@ -81,7 +64,6 @@ export default function PetDetails(props) {
         console.log(resp)
         setPet(resp)
     }
-
 
     useEffect(() => {
         fetchPet()
@@ -98,17 +80,8 @@ export default function PetDetails(props) {
         }
     }
 
-    const petAdopted = () => {
-        if (pet.adopted === false) {
-            return ("not yet")
-        } else {
-            return ("yes")
-        }
-    }
-
     //Edit pet modal
     const handleOpen = () => {
-        values.adopted = adopted
         values.race = pet.race
         values.age = pet.age
         values.name = pet.name
@@ -118,15 +91,8 @@ export default function PetDetails(props) {
     };
 
     const handleClose = () => {
-        values.race = ''
-        values.age = ''
-        values.name = ''
-        values.description = ''
-        values.color = ''
-        values.adopted = ''
         setOpen(false)
     };
-
 
     const handleChange = (prop) => (event) => {
         setValues({...values, [prop]: event.target.value});
@@ -135,12 +101,6 @@ export default function PetDetails(props) {
 
     const handleChangeGender = (event) => {
         setGender(event.target.value);
-        console.log(gender)
-    };
-
-    const handleChangeAdopted = (event) => {
-        setAdopted(event.target.value);
-        console.log(adopted)
     };
 
     const handleEditPet = async (e) => {
@@ -151,9 +111,17 @@ export default function PetDetails(props) {
         let color = values.color
         let race = values.race
         let description = values.description
-        console.log(gender)
-        let dataToUpdate = {name, gender, age, color, race, description, adopted, joinedDate}
-        await axios.patch(`http://localhost:8080/api/pet/edit/${petId}`, dataToUpdate)
+        // let dataToUpdate = {name, gender, age, color, race, description, joinedDate}
+        await axios.patch(`http://localhost:8080/api/pet/edit/${petId}`,
+            {
+                name,
+                gender,
+                age,
+                color,
+                race,
+                description,
+                joinedDate,
+            })
         handleClose()
         await fetchPet()
     }
@@ -215,7 +183,7 @@ export default function PetDetails(props) {
                                 </Typography>
                                 <Typography variant="h6" color="text.secondary">
                                     <img className="margin-flex" width='30px' src="/assets/adopted.svg"
-                                    /><span className="mr-10">Adopted: {petAdopted()}</span>
+                                    /><span className="mr-10">Adopted: not yet</span>
                                 </Typography>
                             </ThemeProvider>
                             <div className="float-right">
@@ -238,7 +206,7 @@ export default function PetDetails(props) {
                                 Edit pet details
                             </Typography>
                             <Box onSubmit={handleEditPet} component="form"
-                                 sx={{display: 'table', textAlign:'center'}}>
+                                 sx={{display: 'table', textAlign: 'center'}}>
                                 <TextField
                                     label="name"
                                     id="name"
@@ -248,23 +216,23 @@ export default function PetDetails(props) {
                                     value={values.name}
                                     onChange={handleChange('name')}
                                 />
-                                <TextField
-                                    id="gender"
-                                    select
-                                    label="gender"
-                                    value={gender}
-                                    onChange={handleChangeGender}
-                                    SelectProps={{
-                                        native: true,
-                                    }}
-                                    color="secondary"
-                                >
-                                    {genders.map((option) => (
-                                        <option key={option.value} value={option.value}>
-                                            {option.label}
-                                        </option>
-                                    ))}
-                                </TextField>
+                                <FormControl>
+                                    <InputLabel color="secondary" id="select-gender">gender</InputLabel>
+                                    <Select
+                                        color="secondary"
+                                        sx={{width: '21ch'}}
+                                        labelId="select-gender"
+                                        id="gender"
+                                        value={gender}
+                                        label="gender"
+                                        onChange={handleChangeGender}>
+                                        {genders.map((gender) => (
+                                            <MenuItem key={gender.value} value={gender.value}>
+                                                {gender.label}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
                                 <TextField
                                     label="age"
                                     id="age"
@@ -301,25 +269,11 @@ export default function PetDetails(props) {
                                     value={values.description}
                                     onChange={handleChange('description')}
                                 />
-                                <TextField
-                                    id="adopted"
-                                    select
-                                    label="adopted"
-                                    value={adopted}
-                                    onChange={handleChangeAdopted}
-                                    SelectProps={{
-                                        native: true,
-                                    }}
-                                    color="secondary"
-                                >
-                                    {adoptedValues.map((option) => (
-                                        <option key={option.value} value={option.value}>
-                                            {option.label}
-                                        </option>
-                                    ))}
-                                </TextField>
-                                <Button sx={{margin: 'auto', mt: '20px',  display: 'table-cell', verticalAlign: 'bottom',
-                                    fontFamily: 'Lora', fontWeight: '600'}}
+
+                                <Button sx={{
+                                    margin: 'auto', mt: '20px', display: 'table-cell', verticalAlign: 'bottom',
+                                    fontFamily: 'Lora', fontWeight: '600'
+                                }}
                                         type="submit"
                                         color="secondary" variant="contained"
                                 >

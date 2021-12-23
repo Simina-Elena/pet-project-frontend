@@ -7,8 +7,8 @@ import {
     Box,
     Button, Checkbox,
     Container,
-    CssBaseline, FormControlLabel, IconButton, ImageList, ImageListItem, Modal,
-    Paper,
+    CssBaseline, FormControl, FormControlLabel, IconButton, ImageList, ImageListItem, InputLabel, MenuItem, Modal,
+    Paper, Select,
     Stack, Switch,
     Table, TableBody, TableCell,
     TableContainer,
@@ -25,8 +25,6 @@ import PetDetails from "./PetDetails";
 
 
 export default function ShelterPage() {
-    let rows = []
-    const history = useHistory()
     const [user, setUser] = useState({})
     const [pets, setPets] = useState([])
     const [order, setOrder] = useState('asc');
@@ -48,16 +46,13 @@ export default function ShelterPage() {
     const genders = [
         {
             value: 'FEMALE',
-            label: 'F',
+            label: 'female',
         },
         {
             value: 'MALE',
-            label: 'M',
+            label: 'male',
         },
-        {
-            value: 'OTHER',
-            label: 'OTHER',
-        },
+
     ];
     const photos = [
         {
@@ -91,10 +86,6 @@ export default function ShelterPage() {
 
     }, [])
 
-    pets.forEach((pet) => {
-        rows.push(createData(pet.id, pet.name, pet.gender, pet.age, pet.race, pet.color))
-    })
-
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -103,7 +94,7 @@ export default function ShelterPage() {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = rows.map((n) => n.id);
+            const newSelecteds = pets.map((n) => n.id);
             setSelected(newSelecteds);
             return;
         }
@@ -149,11 +140,12 @@ export default function ShelterPage() {
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - pets.length) : 0;
 
     const handleOpen = () => setOpen(true);
 
     const handleClose = () => {
+        gender = ''
         values.race = ''
         values.age = ''
         values.name = ''
@@ -193,17 +185,6 @@ export default function ShelterPage() {
         await getPets()
     }
 
-    function createData(id, name, gender, age, race, color) {
-        return {
-            id,
-            name,
-            gender,
-            age,
-            race,
-            color,
-        };
-    }
-
     function descendingComparator(a, b, orderBy) {
         if (b[orderBy] < a[orderBy]) {
             return -1;
@@ -235,12 +216,6 @@ export default function ShelterPage() {
     }
 
     const headCells = [
-        {
-            id: 'id',
-            numeric: false,
-            disablePadding: true,
-            label: 'Registration No.'
-        },
         {
             id: 'name',
             numeric: true,
@@ -332,9 +307,9 @@ export default function ShelterPage() {
     const EnhancedTableToolbar = (props) => {
         const {numSelected} = props;
 
-        const handleDeletePet = () => {
+        const handleDeletePet = async () => {
             selected.forEach((petId) => axios.delete(`http://localhost:8080/api/pet/delete/${petId}`))
-            getPets()
+            await getPets()
             setSelected([])
         }
 
@@ -422,11 +397,11 @@ export default function ShelterPage() {
                     ))}
                 </ImageList>
                 <Box sx={{padding: '10px'}}>
-                    <Typography variant="h2" align="center"
+                    <Typography variant="h3" align="center"
                                 bgcolor='#F0E6EF' fontFamily='Lora'
                                 fontWeight='400'>{AuthService.getCurrentUser().username}</Typography>
                     <Stack direction="row" spacing={2} padding='10px'>
-                        <Button color="secondary" variant="contained" sx={{fontFamily:'Lora', fontWeight: '600'}}
+                        <Button color="secondary" variant="contained" sx={{fontFamily: 'Lora', fontWeight: '600'}}
                                 onClick={handleOpen}>Add pet</Button>
                         {/*AddPet modal start*/}
                         <Modal
@@ -442,7 +417,7 @@ export default function ShelterPage() {
                                     Add pet
                                 </Typography>
                                 <Box onSubmit={onSubmitAddPet} component="form"
-                                     sx={{display: 'table', textAlign:'center'}}>
+                                     sx={{display: 'table', textAlign: 'center'}}>
                                     <TextField
                                         label="name"
                                         id="name"
@@ -452,23 +427,23 @@ export default function ShelterPage() {
                                         value={values.name}
                                         onChange={handleChange('name')}
                                     />
-                                    <TextField
-                                        id="gender"
-                                        select
-                                        label="gender"
-                                        value={gender}
-                                        onChange={handleChangeGender}
-                                        SelectProps={{
-                                            native: true,
-                                        }}
-                                        color="secondary"
-                                    >
-                                        {genders.map((option) => (
-                                            <option key={option.value} value={option.value}>
-                                                {option.label}
-                                            </option>
-                                        ))}
-                                    </TextField>
+                                    <FormControl>
+                                        <InputLabel color="secondary" id="select-gender">gender</InputLabel>
+                                        <Select
+                                            color="secondary"
+                                            sx={{width: '21ch'}}
+                                            labelId="select-gender"
+                                            id="gender"
+                                            value={gender}
+                                            label="gender"
+                                            onChange={handleChangeGender}>
+                                            {genders.map((gender) => (
+                                                <MenuItem key={gender.value} value={gender.value}>
+                                                    {gender.label}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
                                     <TextField
                                         label="age"
                                         id="age"
@@ -505,8 +480,10 @@ export default function ShelterPage() {
                                         value={values.description}
                                         onChange={handleChange('description')}
                                     />
-                                    <Button sx={{margin: 'auto', mt:'20px', display: 'table-cell', verticalAlign: 'bottom',
-                                        fontFamily: 'Lora', fontWeight: '600'}}
+                                    <Button sx={{
+                                        margin: 'auto', mt: '20px', display: 'table-cell', verticalAlign: 'bottom',
+                                        fontFamily: 'Lora', fontWeight: '600'
+                                    }}
                                             type="submit"
                                             color="secondary" variant="contained"
                                     >
@@ -517,7 +494,7 @@ export default function ShelterPage() {
                         </Modal>
                         {/*AddPet modal end*/}
                         <Button color="secondary" variant="contained"
-                                sx={{fontFamily:'Lora', fontWeight: '600'}}>Add activity</Button>
+                                sx={{fontFamily: 'Lora', fontWeight: '600'}}>Add activity</Button>
                     </Stack>
                     <Paper sx={{width: '100%', mb: 2}}>
                         <EnhancedTableToolbar numSelected={selected.length}/>
@@ -533,14 +510,14 @@ export default function ShelterPage() {
                                     orderBy={orderBy}
                                     onSelectAllClick={handleSelectAllClick}
                                     onRequestSort={handleRequestSort}
-                                    rowCount={rows.length}
+                                    rowCount={pets.length}
                                 />
                                 <TableBody>
 
-                                    {stableSort(rows, getComparator(order, orderBy))
+                                    {stableSort(pets, getComparator(order, orderBy))
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                        .map((row, index) => {
-                                            const isItemSelected = isSelected(row.id);
+                                        .map((pet, index) => {
+                                            const isItemSelected = isSelected(pet.id);
                                             const labelId = `enhanced-table-checkbox-${index}`;
 
                                             return (
@@ -549,7 +526,7 @@ export default function ShelterPage() {
                                                     role="checkbox"
                                                     aria-checked={isItemSelected}
                                                     tabIndex={-1}
-                                                    key={row.id}
+                                                    key={pet.id}
                                                     selected={isItemSelected}
                                                 >
                                                     <TableCell padding="checkbox">
@@ -559,27 +536,21 @@ export default function ShelterPage() {
                                                             inputProps={{
                                                                 'aria-labelledby': labelId,
                                                             }}
-                                                            onClick={(event) => handleClick(event, row.id)}
+                                                            onClick={(event) => handleClick(event, pet.id)}
 
                                                         />
                                                     </TableCell>
-                                                    <TableCell
-                                                        component="th"
-                                                        id={labelId}
-                                                        scope="row"
-                                                        padding="none"
-                                                    >
-                                                        {row.id}
-                                                    </TableCell>
-                                                    <TableCell align="right"><Link to={{pathname: "/pet-details", state: row.id}}>{row.name}</Link></TableCell>
-                                                    <TableCell align="right">{row.gender}</TableCell>
-                                                    <TableCell align="right">{row.age}</TableCell>
-                                                    <TableCell align="right">{row.race}</TableCell>
-                                                    <TableCell align="right">{row.color}</TableCell>
+                                                    <TableCell align="right"><Link
+                                                        to={{pathname: "/pet-details", state: pet.id}}>{pet.name}</Link></TableCell>
+                                                    <TableCell align="right">{pet.gender}</TableCell>
+                                                    <TableCell align="right">{pet.age}</TableCell>
+                                                    <TableCell align="right">{pet.race}</TableCell>
+                                                    <TableCell align="right">{pet.color}</TableCell>
                                                 </TableRow>
                                             );
                                             //end return
                                         })}
+
                                     {emptyRows > 0 && (
                                         <TableRow
                                             style={{
@@ -595,7 +566,7 @@ export default function ShelterPage() {
                         <TablePagination
                             rowsPerPageOptions={[5, 10, 25]}
                             component="div"
-                            count={rows.length}
+                            count={pets.length}
                             rowsPerPage={rowsPerPage}
                             page={page}
                             onPageChange={handleChangePage}

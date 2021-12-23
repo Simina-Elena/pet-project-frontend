@@ -1,9 +1,7 @@
 import {makeStyles} from "@mui/styles";
 import {Button, Collapse, IconButton, Stack} from "@mui/material";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
-import {Link as Scroll} from 'react-scroll';
 
 
 const useStyles = makeStyles((theme) => ({
