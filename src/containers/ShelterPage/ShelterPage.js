@@ -1,7 +1,7 @@
-import AuthService from "../services/auth.service";
+import AuthService from "../../services/auth.service";
 import {useEffect, useState} from "react";
 import axios from "axios";
-import authHeader from "../services/auth-header";
+import authHeader from "../../services/auth-header";
 import {
     alpha,
     Box,
@@ -21,7 +21,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import * as React from "react";
 import {Link, useHistory} from "react-router-dom";
-import PetDetails from "./PetDetails";
+import PetDetails from "../PetDetails/PetDetails";
 
 
 export default function ShelterPage() {

@@ -3,10 +3,16 @@
   <component name="ChangeListManager">
     <list default="true" id="e33f84b6-8e13-471e-8a27-cbe0fbd28448" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/PetDetails.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PetDetails.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShelterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShelterPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Footer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Footer/Footer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Header.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/LandingPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/LandingPage/LandingPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Layout.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Layout/Layout.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Login/Login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Navbar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Navbar/Navbar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/PetDetails.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/PetDetails/PetDetails.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/RegisterShelter.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/RegisterShelter/RegisterShelter.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShelterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/ShelterPage/ShelterPage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,8 +58,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Asus\pet-project-frontend\public\assets" />
-      <recent name="C:\Users\Asus\pet-project-frontend\src\components" />
+      <recent name="C:\Users\Asus\pet-project-frontend\src\components\Navbar" />
+      <recent name="C:\Users\Asus\pet-project-frontend\src\components\LandingPage" />
+      <recent name="C:\Users\Asus\pet-project-frontend\src\components\Footer" />
+      <recent name="C:\Users\Asus\pet-project-frontend\src\components\Layout" />
+      <recent name="C:\Users\Asus\pet-project-frontend\src\containers\Login" />
     </key>
   </component>
   <component name="RunManager">
@@ -92,7 +101,8 @@
       <workItem from="1640108866340" duration="2740000" />
       <workItem from="1640114189758" duration="5812000" />
       <workItem from="1640157982995" duration="32053000" />
-      <workItem from="1640239566541" duration="2707000" />
+      <workItem from="1640239566541" duration="5862000" />
+      <workItem from="1641810652684" duration="1056000" />
     </task>
     <servers />
   </component>

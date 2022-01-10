@@ -1,12 +1,12 @@
 import {Route, Switch} from "react-router-dom";
-import LandingPage from "./components/LandingPage";
-import RegisterShelter from "./components/RegisterShelter";
+import LandingPage from "./containers/LandingPage/LandingPage";
+import RegisterShelter from "./containers/RegisterShelter/RegisterShelter";
 import './index.css'
-import Login from "./components/Login";
-import Layout from "./components/Layout";
-import ShelterPage from "./components/ShelterPage";
+import Login from "./containers/Login/Login";
+import Layout from "./components/Layout/Layout";
+import ShelterPage from "./containers/ShelterPage/ShelterPage";
 import { atom } from "jotai";
-import PetDetails from "./components/PetDetails";
+import PetDetails from "./containers/PetDetails/PetDetails";
 
 export const userAtom = atom(true);
 

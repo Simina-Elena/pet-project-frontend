@@ -2,10 +2,10 @@ import {AppBar, Box, Button, IconButton, Toolbar, Typography, Link as link, Stac
 import MenuIcon from '@mui/icons-material/Menu';
 import {makeStyles} from "@mui/styles";
 import {Link, useHistory} from "react-router-dom";
-import AuthService from "../services/auth.service";
+import AuthService from "../../services/auth.service";
 import {useEffect, useState} from "react";
 import {useAtom} from "jotai";
-import {userAtom} from "../App";
+import {userAtom} from "../../App";
 
 const useStyles = makeStyles((theme) => ({
 

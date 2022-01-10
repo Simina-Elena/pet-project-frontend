@@ -10,32 +10,32 @@ import {
     OutlinedInput,
     TextField
 } from "@mui/material";
-import AuthService from "../services/auth.service";
+import AuthService from "../../services/auth.service";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import * as React from "react";
+import {useAtom} from "jotai";
+import {userAtom} from "../../App";
 
-function RegisterShelter() {
+
+function Login() {
+    let history = useHistory()
+    const [userLogged, setUserLogged] = useAtom(userAtom)
+
     const [values, setValues] = useState({
         username: '',
-        email: '',
         password: '',
-        confirmPassword: '',
-        phoneNumber: '',
         showPassword: false,
-        showConfirmPassword: false,
     });
-    let history = useHistory()
 
     const onFinishRegister = async (e) => {
         e.preventDefault()
         console.log(values)
         let username = values.username;
-        let password = values.confirmPassword;
-        let email = values.email;
-        let phoneNumber = values.phoneNumber
-        let user = {username, password, email, phoneNumber};
-        await AuthService.registerShelter(user)
-        history.push("/login")
+        let password = values.password;
+        let user = {username, password};
+        await AuthService.login(user)
+        setUserLogged(true)
+        history.push("/dashboard")
     };
 
 
@@ -48,18 +48,8 @@ function RegisterShelter() {
         setValues({
             ...values,
             showPassword: !values.showPassword,
-
         });
         console.log(values)
-    };
-
-
-    const handleClickShowConfirmPassword = () => {
-        setValues({
-            ...values,
-            showConfirmPassword: !values.showConfirmPassword
-
-        });
     };
 
     const handleMouseDownPassword = (event) => {
@@ -67,7 +57,7 @@ function RegisterShelter() {
     };
 
     return (
-        <div className="flex items-center p-20">
+        <div className="flex items-center p-20 ">
             <div className=" flex-1 h-full max-w-4xl mx-auto  rounded-lg shadow-xl">
                 <div className="my-auto flex flex-col md:flex-row ">
                     <div className="invisible md:visible h-32 md:h-auto md:w-1/2">
@@ -77,11 +67,10 @@ function RegisterShelter() {
                             alt="img"
                         />
                     </div>
-                    <div className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
-                        <div className="w-full">
-
+                    <div className="flex items-center justify-center object-center p-6 sm:p-12 md:w-1/2">
+                        <div className="w-full ">
                             <h1 className="mb-4 text-2xl font-bold text-center text-gray-700">
-                                Register
+                                Login
                             </h1>
                             <form onSubmit={onFinishRegister}>
                                 <Box sx={{display: 'flex', flexWrap: 'wrap'}}>
@@ -93,16 +82,6 @@ function RegisterShelter() {
                                         size="small"
                                         value={values.username}
                                         onChange={handleChange('username')}
-
-                                    />
-                                    <TextField
-                                        label="Email"
-                                        id="email"
-                                        sx={{m: 1, width: '50ch'}}
-                                        color="secondary"
-                                        size="small"
-                                        value={values.email}
-                                        onChange={handleChange('email')}
 
                                     />
                                     <FormControl size="small" sx={{m: 1, width: '50ch'}} variant="outlined"
@@ -128,39 +107,6 @@ function RegisterShelter() {
                                             label="Password"
                                         />
                                     </FormControl>
-                                    <FormControl size="small" sx={{m: 1, width: '50ch'}} variant="outlined"
-                                                 color="secondary">
-                                        <InputLabel htmlFor="outlined-adornment-password">Confirm password</InputLabel>
-                                        <OutlinedInput
-                                            id="outlined-adornment-confirmPassword"
-                                            type={values.showConfirmPassword ? 'text' : 'password'}
-                                            value={values.confirmPassword}
-                                            onChange={handleChange('confirmPassword')}
-                                            endAdornment={
-                                                <InputAdornment position="end">
-                                                    <IconButton
-                                                        aria-label="toggle password visibility"
-                                                        onClick={handleClickShowConfirmPassword}
-                                                        onMouseDown={handleMouseDownPassword}
-                                                        edge="end"
-                                                    >
-                                                        {values.showConfirmPassword ? <VisibilityOff/> : <Visibility/>}
-                                                    </IconButton>
-                                                </InputAdornment>
-                                            }
-                                            label="Confirm password"
-                                        />
-                                    </FormControl>
-                                    <TextField
-                                        label="Phone number"
-                                        id="phoneNumber"
-                                        sx={{m: 1, width: '50ch'}}
-                                        color="secondary"
-                                        size="small"
-                                        value={values.phoneNumber}
-                                        onChange={handleChange('phoneNumber')}
-
-                                    />
 
                                     <Button sx={{margin: 'auto', mt: 2, width: 'min-content'}}
                                             type="submit"
@@ -179,4 +125,4 @@ function RegisterShelter() {
     );
 }
 
-export default RegisterShelter;
+export default Login;
