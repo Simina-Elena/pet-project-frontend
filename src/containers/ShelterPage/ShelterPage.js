@@ -27,14 +27,21 @@ import PetDetails from "../PetDetails/PetDetails";
 export default function ShelterPage() {
     const [user, setUser] = useState({})
     const [pets, setPets] = useState([])
-    const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('name');
-    const [selected, setSelected] = useState([]);
+    const [activities, setActivities] = useState([])
+    const [orderPets, setOrderPets] = useState('asc');
+    const [orderActivities, setOrderActivities] = useState('asc')
+    const [petsOrderBy, setPetsOrderBy] = useState('name');
+    const [activitiesOrderBy, setActivitiesOrderBy] = useState('name')
+    const [selectedPets, setSelectedPets] = useState([]);
+    const [selected, setSelected] = useState([])
     const [page, setPage] = useState(0);
+    const [pageForActivities, setPageForActivities] = useState(0)
     const [dense, setDense] = useState(false);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPageActivities, setRowsPerPageActivities] = useState(5)
     //Pet modal variables
-    const [open, setOpen] = useState(false);
+    const [openPetModal, setOpenPetModal] = useState(false);
+    const [openActivityModal, setOpenActivityModal] = useState(false);
     let [gender, setGender] = useState();
     const [values, setValues] = useState({
         name: '',
@@ -42,6 +49,8 @@ export default function ShelterPage() {
         race: '',
         color: '',
         description: '',
+        capacity: '',
+        type: ''
     });
     const genders = [
         {
@@ -54,6 +63,17 @@ export default function ShelterPage() {
         },
 
     ];
+
+    const activityTypes = [
+        {
+            value: 'INDOOR',
+            label: 'indoor'
+        },
+        {
+            value: 'OUTDOOR',
+            label: 'outdoor'
+        }
+    ]
     const photos = [
         {
             img: 'https://www.peggyadams.org/sites/default/files/images/How%20to%20Help/Capital%20Campaign/lobby.jpg',
@@ -81,20 +101,29 @@ export default function ShelterPage() {
         setPets(res)
     }
 
+    const getActivities = async () => {
+        const data = await axios.get(`http://localhost:8080/api/activities?shelterId=${AuthService.getCurrentUser().id}`)
+        const res = await data.data
+        console.log(res)
+        setActivities(res)
+    }
+
+
     useEffect(() => {
         getPets()
+        getActivities()
 
     }, [])
 
     const handleRequestSort = (event, property) => {
-        const isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
-        setOrderBy(property);
+        const isAsc = petsOrderBy === property && orderPets === 'asc';
+        setOrderPets(isAsc ? 'desc' : 'asc');
+        setPetsOrderBy(property);
     };
 
-    const handleSelectAllClick = (event) => {
+    const handleSelectAllClick = (event, dataTarget) => {
         if (event.target.checked) {
-            const newSelecteds = pets.map((n) => n.id);
+            const newSelecteds = dataTarget.map((n) => n.id);
             setSelected(newSelecteds);
             return;
         }
@@ -139,10 +168,14 @@ export default function ShelterPage() {
     const isSelected = (id) => selected.indexOf(id) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows =
+    const emptyRowsPets =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - pets.length) : 0;
 
-    const handleOpen = () => setOpen(true);
+    const emptyRowsActivities =
+        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - activities.length) : 0;
+
+    const handleOpen = () => setOpenPetModal(true);
+    const handleOpenActivityModal = () => setOpenActivityModal(true);
 
     const handleClose = () => {
         gender = ''
@@ -151,7 +184,11 @@ export default function ShelterPage() {
         values.name = ''
         values.description = ''
         values.color = ''
-        setOpen(false)
+        setOpenPetModal(false)
+    };
+
+    const handleCloseActivityModal = () => {
+        setOpenActivityModal(false)
     };
 
     const handleChange = (prop) => (event) => {
@@ -248,8 +285,23 @@ export default function ShelterPage() {
         },
     ];
 
+    const headCellActivitiesTable = [
+        {
+            id: 'capacity',
+            numeric: true,
+            disablePadding: false,
+            label: 'Capacity',
+        },
+        {
+            id: 'activityType',
+            numeric: true,
+            disablePadding: false,
+            label: 'Activity type',
+        }
+    ]
+
     function EnhancedTableHead(props) {
-        const {onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort} =
+        const {onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, dataTarget} =
             props;
         const createSortHandler = (property) => (event) => {
             onRequestSort(event, property);
@@ -269,7 +321,8 @@ export default function ShelterPage() {
                             }}
                         />
                     </TableCell>
-                    {headCells.map((headCell) => (
+
+                    {dataTarget.map((headCell) => (
                         <TableCell
                             key={headCell.id}
                             align={headCell.numeric ? 'right' : 'left'}
@@ -302,15 +355,16 @@ export default function ShelterPage() {
         order: PropTypes.oneOf(['asc', 'desc']).isRequired,
         orderBy: PropTypes.string.isRequired,
         rowCount: PropTypes.number.isRequired,
+        dataTarget: PropTypes.array.isRequired
     };
 
     const EnhancedTableToolbar = (props) => {
         const {numSelected} = props;
 
         const handleDeletePet = async () => {
-            selected.forEach((petId) => axios.delete(`http://localhost:8080/api/pet/delete/${petId}`))
+            selectedPets.forEach((petId) => axios.delete(`http://localhost:8080/api/pet/delete/${petId}`))
             await getPets()
-            setSelected([])
+            setSelectedPets([])
         }
 
         return (
@@ -381,6 +435,17 @@ export default function ShelterPage() {
         '& .MuiTextField-root': {m: 1, width: '25ch'}
     };
 
+    const onSubmitAddActivity = async (e) => {
+        e.preventDefault()
+        let capacity = values.capacity
+        let type = values.type
+        let shelterId = AuthService.getCurrentUser().id
+        await axios.post(`http://localhost:8080/api/activities`,
+            {capacity, type, shelterId})
+        handleCloseActivityModal()
+        await getActivities()
+    }
+
     return (
         <div>
             <Container maxWidth="md">
@@ -405,7 +470,7 @@ export default function ShelterPage() {
                                 onClick={handleOpen}>Add pet</Button>
                         {/*AddPet modal start*/}
                         <Modal
-                            open={open}
+                            open={openPetModal}
                             onClose={handleClose}
                             aria-labelledby="modal-modal-title"
                             aria-describedby="modal-modal-description"
@@ -494,8 +559,63 @@ export default function ShelterPage() {
                         </Modal>
                         {/*AddPet modal end*/}
                         <Button color="secondary" variant="contained"
-                                sx={{fontFamily: 'Lora', fontWeight: '600'}}>Add activity</Button>
+                                sx={{fontFamily: 'Lora', fontWeight: '600'}} onClick={handleOpenActivityModal}>Add
+                            activity</Button>
+                        {/*Add activity modal start*/}
+                        <Modal
+                            open={openActivityModal}
+                            onClose={handleCloseActivityModal}
+                            aria-labelledby="modal-title"
+                            aria-describedby="modal-modal-description"
+                        >
+                            <Box sx={style}>
+                                <Typography id="modal-title" variant="h6" component="h2" mb='10px'
+                                            fontFamily='Lora' fontWeight='600'>
+                                    Add activity
+                                </Typography>
+                                <Box onSubmit={onSubmitAddActivity} component="form"
+                                     sx={{display: 'table', textAlign: 'center'}}>
+                                    <TextField
+                                        label="capacity"
+                                        id="capacity"
+                                        sx={{m: 1, width: '50ch'}}
+                                        color="secondary"
+                                        size="small"
+                                        value={values.capacity}
+                                        onChange={handleChange('capacity')}
+                                    />
+                                    <FormControl>
+                                        <InputLabel color="secondary" id="select-type">type</InputLabel>
+                                        <Select
+                                            color="secondary"
+                                            sx={{width: '21ch'}}
+                                            labelId="select-type"
+                                            id="type"
+                                            value={values.type}
+                                            label="type"
+                                            onChange={handleChange('type')}>
+                                            {activityTypes.map((activity) => (
+                                                <MenuItem key={activity.value} value={activity.value}>
+                                                    {activity.label}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                    <Button sx={{
+                                        margin: 'auto', mt: '20px', display: 'table-cell', verticalAlign: 'bottom',
+                                        fontFamily: 'Lora', fontWeight: '600'
+                                    }}
+                                            type="submit"
+                                            color="secondary" variant="contained"
+                                    >
+                                        Submit
+                                    </Button>
+                                </Box>
+                            </Box>
+                        </Modal>
+                        {/*Add activity end modal*/}
                     </Stack>
+                    {/*activities table*/}
                     <Paper sx={{width: '100%', mb: 2}}>
                         <EnhancedTableToolbar numSelected={selected.length}/>
                         <TableContainer>
@@ -506,15 +626,92 @@ export default function ShelterPage() {
                             >
                                 <EnhancedTableHead
                                     numSelected={selected.length}
-                                    order={order}
-                                    orderBy={orderBy}
-                                    onSelectAllClick={handleSelectAllClick}
+                                    order={orderActivities}
+                                    orderBy={activitiesOrderBy}
+                                    onSelectAllClick={(event) => handleSelectAllClick(event, activities)}
                                     onRequestSort={handleRequestSort}
-                                    rowCount={pets.length}
+                                    rowCount={activities.length}
+                                    dataTarget={headCellActivitiesTable}
                                 />
                                 <TableBody>
 
-                                    {stableSort(pets, getComparator(order, orderBy))
+                                    {stableSort(activities, getComparator(orderPets, petsOrderBy))
+                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        .map((activity, index) => {
+                                            const isItemSelected = isSelected(activity.id);
+                                            const labelId = `enhanced-table-checkbox-${index}`;
+
+                                            return (
+                                                <TableRow
+                                                    hover
+                                                    role="checkbox"
+                                                    aria-checked={isItemSelected}
+                                                    tabIndex={-1}
+                                                    key={activity.id}
+                                                    selected={isItemSelected}
+                                                >
+                                                    <TableCell padding="checkbox">
+                                                        <Checkbox
+                                                            color="primary"
+                                                            checked={isItemSelected}
+                                                            inputProps={{
+                                                                'aria-labelledby': labelId,
+                                                            }}
+                                                            onClick={(event) => handleClick(event, activity.id)}
+
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell align="right">{activity.capacity}</TableCell>
+                                                    <TableCell align="right">{activity.activityType}</TableCell>
+                                                </TableRow>
+                                            );
+                                            //end return
+                                        })}
+
+                                    {emptyRowsActivities > 0 && (
+                                        <TableRow
+                                            style={{
+                                                height: (dense ? 33 : 53) * emptyRowsActivities,
+                                            }}
+                                        >
+                                            <TableCell colSpan={6}/>
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            component="div"
+                            count={activities.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+                    </Paper>
+
+                    {/*pets table*/}
+                    <Paper sx={{width: '100%', mb: 2}}>
+                        <EnhancedTableToolbar numSelected={selectedPets.length}/>
+                        <TableContainer>
+                            <Table
+                                sx={{minWidth: 750}}
+                                aria-labelledby="tableTitle"
+                                size={dense ? 'small' : 'medium'}
+                            >
+                                <EnhancedTableHead
+                                    numSelected={selectedPets.length}
+                                    order={orderPets}
+                                    orderBy={petsOrderBy}
+                                    onSelectAllClick={(event) => handleSelectAllClick(event, pets)}
+                                    onRequestSort={handleRequestSort}
+                                    rowCount={pets.length}
+                                    dataTarget={headCells}
+                                />
+                                <TableBody>
+
+                                    {stableSort(pets, getComparator(orderPets, petsOrderBy))
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         .map((pet, index) => {
                                             const isItemSelected = isSelected(pet.id);
@@ -551,10 +748,10 @@ export default function ShelterPage() {
                                             //end return
                                         })}
 
-                                    {emptyRows > 0 && (
+                                    {emptyRowsPets > 0 && (
                                         <TableRow
                                             style={{
-                                                height: (dense ? 33 : 53) * emptyRows,
+                                                height: (dense ? 33 : 53) * emptyRowsPets,
                                             }}
                                         >
                                             <TableCell colSpan={6}/>
