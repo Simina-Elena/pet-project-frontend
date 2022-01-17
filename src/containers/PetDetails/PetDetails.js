@@ -3,14 +3,16 @@ import {useEffect, useState} from "react";
 import {
     Box, Button,
     Card,
-    CardActionArea,
     CardContent,
     CardMedia,
     Container,
     createTheme,
-    CssBaseline, FormControl, InputLabel, MenuItem, Modal, Select, TextField,
+    FormControl, InputLabel, MenuItem, Modal, Select, TextField,
     Typography
 } from "@mui/material";
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
 import * as React from "react";
 import {ThemeProvider} from "@mui/styles";
 
@@ -44,6 +46,7 @@ export default function PetDetails(props) {
         race: '',
         color: '',
         description: '',
+        date: new Date()
     });
 
     const genders = [
@@ -111,6 +114,7 @@ export default function PetDetails(props) {
         let color = values.color
         let race = values.race
         let description = values.description
+        let date = new Date(values.date.getFullYear() + '-' +  (values.date.getMonth() + 1)  + '-' +  (values.date.getDate()+1)).toISOString().substring(0,10)
         // let dataToUpdate = {name, gender, age, color, race, description, joinedDate}
         await axios.patch(`http://localhost:8080/api/pet/edit/${petId}`,
             {
@@ -120,7 +124,7 @@ export default function PetDetails(props) {
                 color,
                 race,
                 description,
-                joinedDate,
+                date,
             })
         handleClose()
         await fetchPet()
@@ -269,7 +273,16 @@ export default function PetDetails(props) {
                                     value={values.description}
                                     onChange={handleChange('description')}
                                 />
-
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DatePicker
+                                        label="Joined date"
+                                        value={values.date}
+                                        onChange={(newValue) => {
+                                            setValues({...values, ['date']: newValue});
+                                        }}
+                                        renderInput={(params) => <TextField {...params} />}
+                                    />
+                                </LocalizationProvider>
                                 <Button sx={{
                                     margin: 'auto', mt: '20px', display: 'table-cell', verticalAlign: 'bottom',
                                     fontFamily: 'Lora', fontWeight: '600'

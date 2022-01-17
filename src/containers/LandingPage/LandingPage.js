@@ -1,9 +1,5 @@
 import {makeStyles} from "@mui/styles";
-import Header from "../Header";
 import {Button, Collapse, CssBaseline, Stack} from "@mui/material";
-import Action from "../../components/Action";
-import Navbar from "../../components/Navbar/Navbar";
-import Footer from "../../components/Footer/Footer";
 import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 
