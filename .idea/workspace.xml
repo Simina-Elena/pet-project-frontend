@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="e33f84b6-8e13-471e-8a27-cbe0fbd28448" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/icons8-delete.svg" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/delete.svg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/containers/ShelterPage/ShelterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/ShelterPage/ShelterPage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -49,11 +50,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Asus\pet-project-frontend\public\assets" />
       <recent name="C:\Users\Asus\pet-project-frontend\src\containers" />
       <recent name="C:\Users\Asus\pet-project-frontend\src\components\Navbar" />
       <recent name="C:\Users\Asus\pet-project-frontend\src\components\LandingPage" />
       <recent name="C:\Users\Asus\pet-project-frontend\src\components\Footer" />
-      <recent name="C:\Users\Asus\pet-project-frontend\src\components\Layout" />
     </key>
   </component>
   <component name="RunManager">
@@ -95,7 +96,8 @@
       <workItem from="1640239566541" duration="5862000" />
       <workItem from="1641810652684" duration="1856000" />
       <workItem from="1642158562276" duration="1164000" />
-      <workItem from="1642407728573" duration="18655000" />
+      <workItem from="1642407728573" duration="18819000" />
+      <workItem from="1642501125393" duration="8515000" />
     </task>
     <servers />
   </component>

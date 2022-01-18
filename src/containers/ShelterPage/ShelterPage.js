@@ -5,14 +5,32 @@ import authHeader from "../../services/auth-header";
 import {
     alpha,
     Box,
-    Button, Checkbox,
+    Button,
+    Checkbox,
     Container,
-    CssBaseline, FormControl, FormControlLabel, IconButton, ImageList, ImageListItem, InputLabel, MenuItem, Modal,
-    Paper, Select,
-    Stack, Switch,
-    Table, TableBody, TableCell,
+    FormControl,
+    FormControlLabel,
+    IconButton,
+    ImageList,
+    ImageListItem,
+    InputLabel,
+    MenuItem,
+    Modal,
+    Paper,
+    Select,
+    Stack,
+    Switch,
+    Table,
+    TableBody,
+    TableCell,
     TableContainer,
-    TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip,
+    TableHead,
+    TablePagination,
+    TableRow,
+    TableSortLabel,
+    TextField,
+    Toolbar,
+    Tooltip,
     Typography
 } from "@mui/material";
 import PropTypes from "prop-types";
@@ -22,24 +40,22 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import * as React from "react";
 import {Link, useHistory} from "react-router-dom";
 import PetDetails from "../PetDetails/PetDetails";
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
 
 
 export default function ShelterPage() {
     const [user, setUser] = useState({})
     const [pets, setPets] = useState([])
     const [activities, setActivities] = useState([])
-    const [orderPets, setOrderPets] = useState('asc');
-    const [orderActivities, setOrderActivities] = useState('asc')
-    const [petsOrderBy, setPetsOrderBy] = useState('name');
-    const [activitiesOrderBy, setActivitiesOrderBy] = useState('name')
-    const [selectedPets, setSelectedPets] = useState([]);
+    const [order, setOrder] = useState('asc');
+    const [orderBy, setOrderBy] = useState('name');
     const [selected, setSelected] = useState([])
     const [page, setPage] = useState(0);
-    const [pageForActivities, setPageForActivities] = useState(0)
     const [dense, setDense] = useState(false);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [rowsPerPageActivities, setRowsPerPageActivities] = useState(5)
-    //Pet modal variables
     const [openPetModal, setOpenPetModal] = useState(false);
     const [openActivityModal, setOpenActivityModal] = useState(false);
     let [gender, setGender] = useState();
@@ -116,14 +132,14 @@ export default function ShelterPage() {
     }, [])
 
     const handleRequestSort = (event, property) => {
-        const isAsc = petsOrderBy === property && orderPets === 'asc';
-        setOrderPets(isAsc ? 'desc' : 'asc');
-        setPetsOrderBy(property);
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
     };
 
-    const handleSelectAllClick = (event, dataTarget) => {
+    const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = dataTarget.map((n) => n.id);
+            const newSelecteds = pets.map((n) => n.id);
             setSelected(newSelecteds);
             return;
         }
@@ -168,11 +184,8 @@ export default function ShelterPage() {
     const isSelected = (id) => selected.indexOf(id) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRowsPets =
+    const emptyRows=
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - pets.length) : 0;
-
-    const emptyRowsActivities =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - activities.length) : 0;
 
     const handleOpen = () => setOpenPetModal(true);
     const handleOpenActivityModal = () => setOpenActivityModal(true);
@@ -285,23 +298,9 @@ export default function ShelterPage() {
         },
     ];
 
-    const headCellActivitiesTable = [
-        {
-            id: 'capacity',
-            numeric: true,
-            disablePadding: false,
-            label: 'Capacity',
-        },
-        {
-            id: 'activityType',
-            numeric: true,
-            disablePadding: false,
-            label: 'Activity type',
-        }
-    ]
 
     function EnhancedTableHead(props) {
-        const {onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, dataTarget} =
+        const {onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort} =
             props;
         const createSortHandler = (property) => (event) => {
             onRequestSort(event, property);
@@ -322,7 +321,7 @@ export default function ShelterPage() {
                         />
                     </TableCell>
 
-                    {dataTarget.map((headCell) => (
+                    {headCells.map((headCell) => (
                         <TableCell
                             key={headCell.id}
                             align={headCell.numeric ? 'right' : 'left'}
@@ -354,17 +353,16 @@ export default function ShelterPage() {
         onSelectAllClick: PropTypes.func.isRequired,
         order: PropTypes.oneOf(['asc', 'desc']).isRequired,
         orderBy: PropTypes.string.isRequired,
-        rowCount: PropTypes.number.isRequired,
-        dataTarget: PropTypes.array.isRequired
+        rowCount: PropTypes.number.isRequired
     };
 
     const EnhancedTableToolbar = (props) => {
         const {numSelected} = props;
 
         const handleDeletePet = async () => {
-            selectedPets.forEach((petId) => axios.delete(`http://localhost:8080/api/pet/delete/${petId}`))
+            selected.forEach((petId) => axios.delete(`http://localhost:8080/api/pet/delete/${petId}`))
             await getPets()
-            setSelectedPets([])
+            setSelected([])
         }
 
         return (
@@ -411,8 +409,6 @@ export default function ShelterPage() {
                         </IconButton>
                     </Tooltip>
                 )}
-
-
             </Toolbar>
         );
     };
@@ -444,6 +440,24 @@ export default function ShelterPage() {
             {capacity, type, shelterId})
         handleCloseActivityModal()
         await getActivities()
+    }
+    const [valueTabs, setValueTabs] = useState(0);
+
+    const handleChangeTabs = (event, newValue) => {
+        setValueTabs(newValue);
+    };
+
+    const handleDeleteActivity = async () => {
+        await axios.delete(`http://localhost:8080/api/activities?activityId=${valueTabs}`)
+        await getActivities()
+    }
+
+    function handleDecreaseCapacity() {
+
+    }
+
+    function handleIncreaseCapacity() {
+
     }
 
     return (
@@ -561,6 +575,7 @@ export default function ShelterPage() {
                         <Button color="secondary" variant="contained"
                                 sx={{fontFamily: 'Lora', fontWeight: '600'}} onClick={handleOpenActivityModal}>Add
                             activity</Button>
+
                         {/*Add activity modal start*/}
                         <Modal
                             open={openActivityModal}
@@ -615,7 +630,26 @@ export default function ShelterPage() {
                         </Modal>
                         {/*Add activity end modal*/}
                     </Stack>
-                    {/*activities table*/}
+                    {/*Activity tabs*/}
+                    <Box sx={{width: '100%', typography: 'body1'}}>
+                        <TabContext value={valueTabs}>
+                            <TabList onChange={handleChangeTabs} aria-label="lab API tabs example">
+                                {activities.map((activity) =>
+                                    <Tab label={activity.activityType} value={activity.id}/>
+                                )}
+                            </TabList>
+                            {activities.map((activity) =>
+                                <TabPanel value={activity.id}> Capacity: {activity.capacity} room(s)
+                                    <img width='30px' align="right" src="/assets/delete.svg" onClick={handleDeleteActivity}/>
+                                    <img align="right" width="30px" src="/assets/minus.png" onClick={handleDecreaseCapacity}/>
+                                    <img align="right" width="30px" src="/assets/plus.svg" onClick={handleIncreaseCapacity}/>
+                                </TabPanel>
+                            )}
+
+                        </TabContext>
+                    </Box>
+
+                    {/*pets table*/}
                     <Paper sx={{width: '100%', mb: 2}}>
                         <EnhancedTableToolbar numSelected={selected.length}/>
                         <TableContainer>
@@ -626,92 +660,14 @@ export default function ShelterPage() {
                             >
                                 <EnhancedTableHead
                                     numSelected={selected.length}
-                                    order={orderActivities}
-                                    orderBy={activitiesOrderBy}
-                                    onSelectAllClick={(event) => handleSelectAllClick(event, activities)}
-                                    onRequestSort={handleRequestSort}
-                                    rowCount={activities.length}
-                                    dataTarget={headCellActivitiesTable}
-                                />
-                                <TableBody>
-
-                                    {stableSort(activities, getComparator(orderPets, petsOrderBy))
-                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                        .map((activity, index) => {
-                                            const isItemSelected = isSelected(activity.id);
-                                            const labelId = `enhanced-table-checkbox-${index}`;
-
-                                            return (
-                                                <TableRow
-                                                    hover
-                                                    role="checkbox"
-                                                    aria-checked={isItemSelected}
-                                                    tabIndex={-1}
-                                                    key={activity.id}
-                                                    selected={isItemSelected}
-                                                >
-                                                    <TableCell padding="checkbox">
-                                                        <Checkbox
-                                                            color="primary"
-                                                            checked={isItemSelected}
-                                                            inputProps={{
-                                                                'aria-labelledby': labelId,
-                                                            }}
-                                                            onClick={(event) => handleClick(event, activity.id)}
-
-                                                        />
-                                                    </TableCell>
-                                                    <TableCell align="right">{activity.capacity}</TableCell>
-                                                    <TableCell align="right">{activity.activityType}</TableCell>
-                                                </TableRow>
-                                            );
-                                            //end return
-                                        })}
-
-                                    {emptyRowsActivities > 0 && (
-                                        <TableRow
-                                            style={{
-                                                height: (dense ? 33 : 53) * emptyRowsActivities,
-                                            }}
-                                        >
-                                            <TableCell colSpan={6}/>
-                                        </TableRow>
-                                    )}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <TablePagination
-                            rowsPerPageOptions={[5, 10, 25]}
-                            component="div"
-                            count={activities.length}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            onPageChange={handleChangePage}
-                            onRowsPerPageChange={handleChangeRowsPerPage}
-                        />
-                    </Paper>
-
-                    {/*pets table*/}
-                    <Paper sx={{width: '100%', mb: 2}}>
-                        <EnhancedTableToolbar numSelected={selectedPets.length}/>
-                        <TableContainer>
-                            <Table
-                                sx={{minWidth: 750}}
-                                aria-labelledby="tableTitle"
-                                size={dense ? 'small' : 'medium'}
-                            >
-                                <EnhancedTableHead
-                                    numSelected={selectedPets.length}
-                                    order={orderPets}
-                                    orderBy={petsOrderBy}
-                                    onSelectAllClick={(event) => handleSelectAllClick(event, pets)}
+                                    order={order}
+                                    orderBy={orderBy}
+                                    onSelectAllClick={handleSelectAllClick}
                                     onRequestSort={handleRequestSort}
                                     rowCount={pets.length}
-                                    dataTarget={headCells}
                                 />
                                 <TableBody>
-
-                                    {stableSort(pets, getComparator(orderPets, petsOrderBy))
+                                    {stableSort(pets, getComparator(order, orderBy))
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         .map((pet, index) => {
                                             const isItemSelected = isSelected(pet.id);
@@ -745,13 +701,12 @@ export default function ShelterPage() {
                                                     <TableCell align="right">{pet.color}</TableCell>
                                                 </TableRow>
                                             );
-                                            //end return
                                         })}
 
-                                    {emptyRowsPets > 0 && (
+                                    {emptyRows > 0 && (
                                         <TableRow
                                             style={{
-                                                height: (dense ? 33 : 53) * emptyRowsPets,
+                                                height: (dense ? 33 : 53) * emptyRows,
                                             }}
                                         >
                                             <TableCell colSpan={6}/>
