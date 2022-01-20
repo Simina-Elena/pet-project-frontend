@@ -44,6 +44,8 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+import {Input, PhotoCamera} from "@mui/icons-material";
+import {styled} from '@mui/material/styles';
 
 
 export default function ShelterPage() {
@@ -58,6 +60,8 @@ export default function ShelterPage() {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [openPetModal, setOpenPetModal] = useState(false);
     const [openActivityModal, setOpenActivityModal] = useState(false);
+    const [file, setFile] = useState("")
+    const [photos, setPhotos] = useState([])
     let [gender, setGender] = useState();
     const [values, setValues] = useState({
         name: '',
@@ -90,15 +94,6 @@ export default function ShelterPage() {
             label: 'outdoor'
         }
     ]
-    const photos = [
-        {
-            img: 'https://www.peggyadams.org/sites/default/files/images/How%20to%20Help/Capital%20Campaign/lobby.jpg',
-            title: 'Shelter1',
-        },
-        {
-            img: 'https://www.careermatch.com/job-prep/wp-content/uploads/sites/2/2017/11/Animal_Shelter_Worker_Profile_Image.jpg',
-            title: 'Shelter2',
-        },]
 
     const getShelter = async () => {
         const data = await axios.get(`http://localhost:8080/api/shelter/profile/${AuthService.getCurrentUser().username}`,
@@ -120,15 +115,37 @@ export default function ShelterPage() {
     const getActivities = async () => {
         const data = await axios.get(`http://localhost:8080/api/activities?shelterId=${AuthService.getCurrentUser().id}`)
         const res = await data.data
-        console.log(res)
         setActivities(res)
     }
 
+    const handleImage = async (e) => {
+        e.preventDefault()
+        let formData = new FormData()
+        formData.append('file', file)
+        formData.append('shelterId', AuthService.getCurrentUser().id)
+        await axios.post(`http://localhost:8080/file/upload`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        })
+        setFile('')
+        await getImage()
+    }
+
+    const getImage = async () => {
+        const data = await axios.get(`http://localhost:8080/api/images?shelterId=${AuthService.getCurrentUser().id}`, {
+            headers: authHeader(),
+            "Content-Type": "multipart/form-data"
+        })
+        const resp = await data.data
+        console.log(data)
+        setPhotos(resp)
+    }
 
     useEffect(() => {
         getPets()
         getActivities()
-
+        getImage()
     }, [])
 
     const handleRequestSort = (event, property) => {
@@ -184,7 +201,7 @@ export default function ShelterPage() {
     const isSelected = (id) => selected.indexOf(id) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows=
+    const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - pets.length) : 0;
 
     const handleOpen = () => setOpenPetModal(true);
@@ -213,6 +230,7 @@ export default function ShelterPage() {
         setGender(event.target.value);
         console.log(gender)
     };
+
 
     const onSubmitAddPet = async (e) => {
         e.preventDefault()
@@ -452,33 +470,51 @@ export default function ShelterPage() {
         await getActivities()
     }
 
-    function handleDecreaseCapacity() {
-
+    const handleDecreaseCapacity = async () => {
+        await axios.patch(`http://localhost:8080/api/activities/decrease-capacity?activityId=${valueTabs}`)
+        await getActivities()
     }
 
-    function handleIncreaseCapacity() {
-
+    const handleIncreaseCapacity = async () => {
+        await axios.patch(`http://localhost:8080/api/activities/increase-capacity?activityId=${valueTabs}`)
+        await getActivities()
     }
+
+    const Input = styled('input')({
+        display: 'none',
+    });
 
     return (
         <div>
             <Container maxWidth="md">
                 <ImageList sx={{width: 'auto', height: 250, padding: '10px'}} cols={2} rowHeight={350}>
                     {photos.map((item) => (
-                        <ImageListItem key={item.img}>
+                        <ImageListItem key={item.name}>
                             <img
-                                src={item.img}
-                                srcSet={item.img}
-                                alt={item.title}
+                                src={'https://petprojectimagestorage.s3.amazonaws.com/' + item.name}
+                                alt={item.name}
                                 loading="lazy"
                             />
                         </ImageListItem>
                     ))}
                 </ImageList>
+
                 <Box sx={{padding: '10px'}}>
                     <Typography variant="h3" align="center"
                                 bgcolor='#F0E6EF' fontFamily='Lora'
-                                fontWeight='400'>{AuthService.getCurrentUser().username}</Typography>
+                                fontWeight='400'>{AuthService.getCurrentUser().username}
+                    </Typography>
+
+                    <label htmlFor="icon-button-file">
+                        <Stack direction="row" spacing={2}> <Input accept="image/*" id="icon-button-file" type="file"
+                                                                   onChange={(e) => setFile(e.target.files[0])}/>
+                            <IconButton color="primary" aria-label="upload picture" component="span">
+                                <PhotoCamera color="secondary"/>
+                            </IconButton>
+                            <Typography>{file.name}</Typography>
+                            <Button color='secondary' onClick={handleImage}>Upload photo</Button></Stack>
+                    </label>
+
                     <Stack direction="row" spacing={2} padding='10px'>
                         <Button color="secondary" variant="contained" sx={{fontFamily: 'Lora', fontWeight: '600'}}
                                 onClick={handleOpen}>Add pet</Button>
@@ -633,16 +669,19 @@ export default function ShelterPage() {
                     {/*Activity tabs*/}
                     <Box sx={{width: '100%', typography: 'body1'}}>
                         <TabContext value={valueTabs}>
-                            <TabList onChange={handleChangeTabs} aria-label="lab API tabs example">
+                            <TabList onChange={handleChangeTabs} aria-label="lab API tabs">
                                 {activities.map((activity) =>
                                     <Tab label={activity.activityType} value={activity.id}/>
                                 )}
                             </TabList>
                             {activities.map((activity) =>
                                 <TabPanel value={activity.id}> Capacity: {activity.capacity} room(s)
-                                    <img width='30px' align="right" src="/assets/delete.svg" onClick={handleDeleteActivity}/>
-                                    <img align="right" width="30px" src="/assets/minus.png" onClick={handleDecreaseCapacity}/>
-                                    <img align="right" width="30px" src="/assets/plus.svg" onClick={handleIncreaseCapacity}/>
+                                    <img width='30px' align="right" src="/assets/delete.svg"
+                                         onClick={handleDeleteActivity}/>
+                                    <img align="right" width="30px" src="/assets/minus.png"
+                                         onClick={handleDecreaseCapacity}/>
+                                    <img align="right" width="30px" src="/assets/plus.svg"
+                                         onClick={handleIncreaseCapacity}/>
                                 </TabPanel>
                             )}
 
