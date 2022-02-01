@@ -12,7 +12,8 @@ import {
     FormControlLabel,
     IconButton,
     ImageList,
-    ImageListItem,
+    ImageListItem, ImageListItemBar,
+    InputBase,
     InputLabel,
     MenuItem,
     Modal,
@@ -36,21 +37,62 @@ import {
 import PropTypes from "prop-types";
 import {visuallyHidden} from '@mui/utils';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import * as React from "react";
 import {Link, useHistory} from "react-router-dom";
-import PetDetails from "../PetDetails/PetDetails";
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import {Input, PhotoCamera} from "@mui/icons-material";
 import {styled} from '@mui/material/styles';
+import SearchIcon from '@mui/icons-material/Search';
 
+const Search = styled('div')(({ theme }) => ({
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: alpha(theme.palette.common.white, 0.15),
+    '&:hover': {
+        backgroundColor: alpha(theme.palette.common.white, 0.25),
+    },
+    marginLeft: 0,
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+        marginLeft: theme.spacing(1),
+        width: 'auto',
+    },
+}));
+
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+    padding: theme.spacing(0, 2),
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+    color: 'inherit',
+    '& .MuiInputBase-input': {
+        padding: theme.spacing(1, 1, 1, 0),
+        // vertical padding + font size from searchIcon
+        paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+        transition: theme.transitions.create('width'),
+        width: '100%',
+        [theme.breakpoints.up('sm')]: {
+            width: '12ch',
+            '&:focus': {
+                width: '20ch',
+            },
+        },
+    },
+}));
 
 export default function ShelterPage() {
     const [user, setUser] = useState({})
     const [pets, setPets] = useState([])
+    const [filteredPets, setFilteredPets] = useState([])
     const [activities, setActivities] = useState([])
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('name');
@@ -122,18 +164,18 @@ export default function ShelterPage() {
         e.preventDefault()
         let formData = new FormData()
         formData.append('file', file)
-        formData.append('shelterId', AuthService.getCurrentUser().id)
+        formData.append('id', AuthService.getCurrentUser().id)
         await axios.post(`http://localhost:8080/file/upload`, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             }
         })
         setFile('')
-        await getImage()
+        await getImages()
     }
 
-    const getImage = async () => {
-        const data = await axios.get(`http://localhost:8080/api/images?shelterId=${AuthService.getCurrentUser().id}`, {
+    const getImages = async () => {
+        const data = await axios.get(`http://localhost:8080/api/images/for-shelter/${AuthService.getCurrentUser().id}`, {
             headers: authHeader(),
             "Content-Type": "multipart/form-data"
         })
@@ -145,7 +187,7 @@ export default function ShelterPage() {
     useEffect(() => {
         getPets()
         getActivities()
-        getImage()
+        getImages()
     }, [])
 
     const handleRequestSort = (event, property) => {
@@ -374,6 +416,12 @@ export default function ShelterPage() {
         rowCount: PropTypes.number.isRequired
     };
 
+    const handleSearchPet = (e) =>{
+        console.log(e.target.value)
+        if(e.key === 'Enter')
+            setFilteredPets(pets.filter(pet => pet.name.includes(e.target.value)))
+    }
+
     const EnhancedTableToolbar = (props) => {
         const {numSelected} = props;
 
@@ -410,7 +458,7 @@ export default function ShelterPage() {
                         id="tableTitle"
                         component="div"
                     >
-                        Pets
+                       <Button sx={{color: 'black', fontFamily: 'Lora', fontWeight: 600, fontSize: '1rem'}} onClick={() => setFilteredPets([])}>Pets</Button>
                     </Typography>
                 )}
 
@@ -421,10 +469,17 @@ export default function ShelterPage() {
                         </IconButton>
                     </Tooltip>
                 ) : (
-                    <Tooltip title="Filter list">
-                        <IconButton>
-                            <FilterListIcon/>
-                        </IconButton>
+                    <Tooltip title="Search for pet">
+                        <Search>
+                            <SearchIconWrapper>
+                                <SearchIcon />
+                            </SearchIconWrapper>
+                            <StyledInputBase
+                                placeholder="Search…"
+                                inputProps={{ 'aria-label': 'search' }}
+                                onKeyDown={handleSearchPet}
+                            />
+                        </Search>
                     </Tooltip>
                 )}
             </Toolbar>
@@ -484,6 +539,12 @@ export default function ShelterPage() {
         display: 'none',
     });
 
+    const handleDeletePicture = async (item) => {
+        console.log(item)
+        await axios.delete(`http://localhost:8080/file/delete/${item}`)
+        await getImages()
+    }
+
     return (
         <div>
             <Container maxWidth="md">
@@ -494,6 +555,23 @@ export default function ShelterPage() {
                                 src={'https://petprojectimagestorage.s3.amazonaws.com/' + item.name}
                                 alt={item.name}
                                 loading="lazy"
+                            />
+                            <ImageListItemBar
+                                sx={{
+                                background:
+                                    'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
+                                    'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+                            }}
+                                position="top"
+                                actionIcon={
+                                    <IconButton
+                                        sx={{ color: 'white' }}
+                                        aria-label={`star ${item.title}`}
+                                    >
+                                        <DeleteIcon onClick={()=>handleDeletePicture(item.name)}/>
+                                    </IconButton>
+                                }
+                                actionPosition="left"
                             />
                         </ImageListItem>
                     ))}
@@ -512,7 +590,7 @@ export default function ShelterPage() {
                                 <PhotoCamera color="secondary"/>
                             </IconButton>
                             <Typography>{file.name}</Typography>
-                            <Button color='secondary' onClick={handleImage}>Upload photo</Button></Stack>
+                            <Button sx={{fontFamily: 'Lora', fontWeight: 600}} color='secondary' onClick={handleImage}>Upload picture</Button></Stack>
                     </label>
 
                     <Stack direction="row" spacing={2} padding='10px'>
@@ -706,7 +784,41 @@ export default function ShelterPage() {
                                     rowCount={pets.length}
                                 />
                                 <TableBody>
-                                    {stableSort(pets, getComparator(order, orderBy))
+                                    {filteredPets.length === 0 ? stableSort(pets, getComparator(order, orderBy))
+                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        .map((pet, index) => {
+                                            const isItemSelected = isSelected(pet.id);
+                                            const labelId = `enhanced-table-checkbox-${index}`;
+
+                                            return (
+                                                <TableRow
+                                                    hover
+                                                    role="checkbox"
+                                                    aria-checked={isItemSelected}
+                                                    tabIndex={-1}
+                                                    key={pet.id}
+                                                    selected={isItemSelected}
+                                                >
+                                                    <TableCell padding="checkbox">
+                                                        <Checkbox
+                                                            color="primary"
+                                                            checked={isItemSelected}
+                                                            inputProps={{
+                                                                'aria-labelledby': labelId,
+                                                            }}
+                                                            onClick={(event) => handleClick(event, pet.id)}
+
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell align="right"><Link
+                                                        to={{pathname: "/pet-details", state: pet.id}}>{pet.name}</Link></TableCell>
+                                                    <TableCell align="right">{pet.gender}</TableCell>
+                                                    <TableCell align="right">{pet.age}</TableCell>
+                                                    <TableCell align="right">{pet.race}</TableCell>
+                                                    <TableCell align="right">{pet.color}</TableCell>
+                                                </TableRow>
+                                            );
+                                        }) : stableSort(filteredPets, getComparator(order, orderBy))
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         .map((pet, index) => {
                                             const isItemSelected = isSelected(pet.id);

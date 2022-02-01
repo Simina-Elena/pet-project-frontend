@@ -1,13 +1,24 @@
 import axios from "axios";
 import {useEffect, useState} from "react";
 import {
-    Box, Button,
+    Box,
+    Button,
     Card,
     CardContent,
     CardMedia,
     Container,
     createTheme,
-    FormControl, InputLabel, MenuItem, Modal, Select, TextField,
+    FormControl,
+    IconButton,
+    ImageListItem,
+    InputLabel,
+    ListItem,
+    ListItemAvatar, ListItemIcon, ListItemText,
+    MenuItem,
+    Modal,
+    Select,
+    Stack,
+    TextField,
     Typography
 } from "@mui/material";
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
@@ -15,6 +26,14 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 import * as React from "react";
 import {ThemeProvider} from "@mui/styles";
+import ImageGallery from 'react-image-gallery';
+import DeleteIcon from '@mui/icons-material/Delete'
+import AuthService from "../../services/auth.service";
+import authHeader from "../../services/auth-header";
+import {Input, List, PhotoCamera} from "@mui/icons-material";
+import {styled} from "@mui/material/styles";
+import Carousel from "nuka-carousel";
+import FolderIcon from '@mui/icons-material/Folder';
 
 
 const theme = createTheme({
@@ -22,12 +41,6 @@ const theme = createTheme({
         MuiTypography: {
             defaultProps: {
                 display: "flex",
-                "& .hidden-button": {
-                    display: "none"
-                },
-                "&:hover .hidden-button": {
-                    display: "block"
-                },
 
             }
         }
@@ -35,11 +48,13 @@ const theme = createTheme({
 })
 
 export default function PetDetails(props) {
-    const petId = props.location.state
-    const [pet, setPet] = useState({})
-    const joinedDate = pet.joinedDate
+    const petId = props.location.state;
+    const [pet, setPet] = useState({});
     const [gender, setGender] = useState('');
     const [open, setOpen] = useState(false);
+    const [openModalPictures, setOpenModalPictures] = useState(false);
+    const [file, setFile] = useState([]);
+    const [photos, setPhotos] = useState([]);
     const [values, setValues] = useState({
         name: '',
         age: '',
@@ -68,8 +83,33 @@ export default function PetDetails(props) {
         setPet(resp)
     }
 
+    const handleImage = async (e) => {
+        e.preventDefault()
+        let formData = new FormData()
+        formData.append('file', file)
+        formData.append('id', petId)
+        await axios.post(`http://localhost:8080/file/upload`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        })
+        setFile('')
+        await getImages()
+    }
+
+    const getImages = async () => {
+        const data = await axios.get(`http://localhost:8080/api/images/for-pet/${petId}`, {
+            headers: authHeader(),
+            "Content-Type": "multipart/form-data"
+        })
+        const resp = await data.data
+        console.log(data)
+        setPhotos(resp)
+    }
+
     useEffect(() => {
         fetchPet()
+        getImages()
 
     }, [])
 
@@ -114,8 +154,8 @@ export default function PetDetails(props) {
         let color = values.color
         let race = values.race
         let description = values.description
-        let date = new Date(values.date.getFullYear() + '-' +  (values.date.getMonth() + 1)  + '-' +  (values.date.getDate()+1)).toISOString().substring(0,10)
-        // let dataToUpdate = {name, gender, age, color, race, description, joinedDate}
+        let date = new Date(values.date.getFullYear() + '-' + (values.date.getMonth() + 1) + '-' + (values.date.getDate() + 1)).toISOString().substring(0, 10)
+        //TODO: verify algorithm for 31 ian
         await axios.patch(`http://localhost:8080/api/pet/edit/${petId}`,
             {
                 name,
@@ -128,6 +168,15 @@ export default function PetDetails(props) {
             })
         handleClose()
         await fetchPet()
+    }
+
+    //Delete a picture
+    const handleOpenDeleteAPicture = () => {
+        setOpenModalPictures(true)
+    }
+
+    const handleCloseModalPictures = () => {
+        setOpenModalPictures(false)
     }
 
     const style = {
@@ -143,17 +192,87 @@ export default function PetDetails(props) {
         '& .MuiTextField-root': {m: 1, width: '25ch'},
     };
 
+
+    const images = [
+        {
+            original: 'https://picsum.photos/id/1018/1000/600/',
+            thumbnail: 'https://picsum.photos/id/1018/250/150/',
+        },
+        {
+            original: 'https://picsum.photos/id/1015/1000/600/',
+            thumbnail: 'https://picsum.photos/id/1015/250/150/',
+        },
+        {
+            original: 'https://picsum.photos/id/1019/1000/600/',
+            thumbnail: 'https://picsum.photos/id/1019/250/150/',
+        },
+    ];
+
+    const Input = styled('input')({
+        display: 'none',
+    });
+
+    const handleDeletePicture = async (item) => {
+        console.log(item)
+        await axios.delete(`http://localhost:8080/file/delete/${item}`)
+        await getImages()
+    }
+
     return (
         <div>
             <Container maxWidth="md">
                 <Box sx={{justifyContent: 'center', alignItems: 'center', padding: '15px'}}>
                     <Card sx={{maxWidth: 700}}>
-                        <CardMedia
-                            component="img"
-                            height="140"
-                            image="/assets/cat.jpg"
-                            alt="cat"
-                        />
+                        <Carousel style={{marginBottom: '10px'}}>
+                            {photos.map((item) => (
+                                <div style={{position: 'relative'}}>
+                                <DeleteIcon style={{position: 'absolute', top: '4px', right: '5px', color: 'red'}} onClick={handleDeletePicture(item.name)}/>
+                                <img src={'https://petprojectpetsimagesstorage.s3.amazonaws.com/' + item.name}
+                                     alt={item.name}
+                                     loading="lazy"/>
+                                </div>
+                            ))}
+                        </Carousel>
+
+                        <label htmlFor="icon-button-file">
+                            <Stack direction="row" spacing={2}> <Input accept="image/*" id="icon-button-file"
+                                                                       type="file"
+                                                                       onChange={(e) => setFile(e.target.files[0])}/>
+                                <IconButton color="primary" aria-label="upload picture" component="span">
+                                    <PhotoCamera color="secondary"/>
+                                </IconButton>
+                                <Typography>{file.name}</Typography>
+                                <Button sx={{fontFamily: 'Lora', fontWeight: 600}} color='secondary'
+                                        onClick={handleImage}>Upload picture</Button>
+                                <Button sx={{fontFamily: 'Lora', fontWeight: 600}} color='secondary'
+                                        onClick={handleOpenDeleteAPicture}>Delete a picture</Button>
+                                <Box sx={{padding: '10px'}}>
+                                    <Modal
+                                        open={openModalPictures}
+                                        onClose={handleCloseModalPictures}
+                                        aria-labelledby="modal-modal-title-delete"
+                                        aria-describedby="modal-modal-description-delete"
+                                    >
+                                        <Box sx={style}>
+                                            <List>
+                                                {photos.map((item) => (
+                                                    <ListItem
+                                                        secondaryAction={
+                                                            <IconButton edge="end" aria-label="delete">
+                                                                <DeleteIcon/>
+                                                            </IconButton>
+                                                        }
+                                                    >
+                                                        <ListItemText>
+                                                            {item.name}
+                                                        </ListItemText>
+                                                    </ListItem>))}
+                                            </List>
+                                        </Box>
+                                    </Modal>
+                                </Box>
+                            </Stack>
+                        </label>
                         <CardContent>
                             <ThemeProvider theme={theme}>
                                 <Typography variant="h6" color="text.secondary">

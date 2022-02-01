@@ -3,7 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="e33f84b6-8e13-471e-8a27-cbe0fbd28448" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/containers/PetDetails/PetDetails.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/PetDetails/PetDetails.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/containers/ShelterPage/ShelterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/ShelterPage/ShelterPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,7 +45,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../animeeater/frontend" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../journeyfy-travel-application-frontend" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2021.2.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
@@ -99,7 +103,14 @@
       <workItem from="1642501125393" duration="14705000" />
       <workItem from="1642540185822" duration="2041000" />
       <workItem from="1642588012367" duration="10636000" />
-      <workItem from="1642665566709" duration="15060000" />
+      <workItem from="1642665566709" duration="15228000" />
+      <workItem from="1642706013897" duration="895000" />
+      <workItem from="1642749961059" duration="1282000" />
+      <workItem from="1643112064665" duration="41000" />
+      <workItem from="1643286525514" duration="1158000" />
+      <workItem from="1643541356697" duration="8417000" />
+      <workItem from="1643627009770" duration="7353000" />
+      <workItem from="1643698338107" duration="8650000" />
     </task>
     <servers />
   </component>
