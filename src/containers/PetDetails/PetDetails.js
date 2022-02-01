@@ -9,7 +9,7 @@ import {
     Container,
     createTheme,
     FormControl,
-    IconButton,
+    IconButton, ImageList,
     ImageListItem,
     InputLabel,
     ListItem,
@@ -114,9 +114,9 @@ export default function PetDetails(props) {
     }, [])
 
     const petAge = () => {
-        if (pet.age < 1) {
+        if (pet.age < '1') {
             return (pet.age + " months")
-        } else if (pet.age === 1) {
+        } else if (pet.age === '1') {
             return (pet.age + " year")
         } else {
             return (pet.age + " years")
@@ -154,7 +154,7 @@ export default function PetDetails(props) {
         let color = values.color
         let race = values.race
         let description = values.description
-        let date = new Date(values.date.getFullYear() + '-' + (values.date.getMonth() + 1) + '-' + (values.date.getDate() + 1)).toISOString().substring(0, 10)
+        let date = new Date(values.date.getFullYear() + '-' + (values.date.getMonth() + 1) + '-' + (values.date.getDate()+1)).toISOString().substring(0, 10)
         //TODO: verify algorithm for 31 ian
         await axios.patch(`http://localhost:8080/api/pet/edit/${petId}`,
             {
@@ -214,7 +214,7 @@ export default function PetDetails(props) {
 
     const handleDeletePicture = async (item) => {
         console.log(item)
-        await axios.delete(`http://localhost:8080/file/delete/${item}`)
+        await axios.delete(`http://localhost:8080/file/delete-for-pet/${item}`)
         await getImages()
     }
 
@@ -223,16 +223,17 @@ export default function PetDetails(props) {
             <Container maxWidth="md">
                 <Box sx={{justifyContent: 'center', alignItems: 'center', padding: '15px'}}>
                     <Card sx={{maxWidth: 700}}>
-                        <Carousel style={{marginBottom: '10px'}}>
+                        {photos.length > 0 ? (<Carousel style={{marginBottom: '10px'}}>
                             {photos.map((item) => (
                                 <div style={{position: 'relative'}}>
-                                <DeleteIcon style={{position: 'absolute', top: '4px', right: '5px', color: 'red'}} onClick={handleDeletePicture(item.name)}/>
-                                <img src={'https://petprojectpetsimagesstorage.s3.amazonaws.com/' + item.name}
-                                     alt={item.name}
-                                     loading="lazy"/>
+                                    <DeleteIcon style={{position: 'absolute', top: '4px', right: '5px', color: 'red'}}
+                                                onClick={() => handleDeletePicture(item.name)}/>
+                                    <img src={'https://petprojectpetsimagesstorage.s3.amazonaws.com/' + item.name}
+                                         alt={item.name}
+                                         loading="lazy"/>
                                 </div>
                             ))}
-                        </Carousel>
+                        </Carousel>) : (<img src="/assets/nopicture.jpg"  alt="no picture"/>)}
 
                         <label htmlFor="icon-button-file">
                             <Stack direction="row" spacing={2}> <Input accept="image/*" id="icon-button-file"
@@ -244,33 +245,6 @@ export default function PetDetails(props) {
                                 <Typography>{file.name}</Typography>
                                 <Button sx={{fontFamily: 'Lora', fontWeight: 600}} color='secondary'
                                         onClick={handleImage}>Upload picture</Button>
-                                <Button sx={{fontFamily: 'Lora', fontWeight: 600}} color='secondary'
-                                        onClick={handleOpenDeleteAPicture}>Delete a picture</Button>
-                                <Box sx={{padding: '10px'}}>
-                                    <Modal
-                                        open={openModalPictures}
-                                        onClose={handleCloseModalPictures}
-                                        aria-labelledby="modal-modal-title-delete"
-                                        aria-describedby="modal-modal-description-delete"
-                                    >
-                                        <Box sx={style}>
-                                            <List>
-                                                {photos.map((item) => (
-                                                    <ListItem
-                                                        secondaryAction={
-                                                            <IconButton edge="end" aria-label="delete">
-                                                                <DeleteIcon/>
-                                                            </IconButton>
-                                                        }
-                                                    >
-                                                        <ListItemText>
-                                                            {item.name}
-                                                        </ListItemText>
-                                                    </ListItem>))}
-                                            </List>
-                                        </Box>
-                                    </Modal>
-                                </Box>
                             </Stack>
                         </label>
                         <CardContent>

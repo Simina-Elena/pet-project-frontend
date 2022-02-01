@@ -46,6 +46,7 @@ import TabPanel from '@mui/lab/TabPanel';
 import {Input, PhotoCamera} from "@mui/icons-material";
 import {styled} from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
+import ShelterInfo from "../../components/ShelterInfo";
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -276,8 +277,7 @@ export default function ShelterPage() {
 
     const onSubmitAddPet = async (e) => {
         e.preventDefault()
-        console.log(values)
-        let name = values.name
+        let name = capitalize(values.name)
         let age = values.age
         let color = values.color
         let race = values.race
@@ -311,8 +311,6 @@ export default function ShelterPage() {
             : (a, b) => -descendingComparator(a, b, orderBy);
     }
 
-// This method is created for cross-browser compatibility, if you don't
-// need to support IE11, you can use Array.prototype.sort() directly
     function stableSort(array, comparator) {
         const stabilizedThis = array.map((el, index) => [el, index]);
         stabilizedThis.sort((a, b) => {
@@ -419,7 +417,7 @@ export default function ShelterPage() {
     const handleSearchPet = (e) =>{
         console.log(e.target.value)
         if(e.key === 'Enter')
-            setFilteredPets(pets.filter(pet => pet.name.includes(e.target.value)))
+            setFilteredPets(pets.filter(pet => capitalize(pet.name).includes(e.target.value)))
     }
 
     const EnhancedTableToolbar = (props) => {
@@ -541,8 +539,12 @@ export default function ShelterPage() {
 
     const handleDeletePicture = async (item) => {
         console.log(item)
-        await axios.delete(`http://localhost:8080/file/delete/${item}`)
+        await axios.delete(`http://localhost:8080/file/delete-for-shelter/${item}`)
         await getImages()
+    }
+
+    const capitalize = (petName) => {
+        return petName.charAt(0).toUpperCase() + petName.slice(1)
     }
 
     return (
@@ -576,7 +578,6 @@ export default function ShelterPage() {
                         </ImageListItem>
                     ))}
                 </ImageList>
-
                 <Box sx={{padding: '10px'}}>
                     <Typography variant="h3" align="center"
                                 bgcolor='#F0E6EF' fontFamily='Lora'
@@ -766,6 +767,10 @@ export default function ShelterPage() {
                         </TabContext>
                     </Box>
 
+                    <Paper sx={{mb: 2}}>
+                        <ShelterInfo props={user}/>
+                    </Paper>
+
                     {/*pets table*/}
                     <Paper sx={{width: '100%', mb: 2}}>
                         <EnhancedTableToolbar numSelected={selected.length}/>
@@ -811,7 +816,7 @@ export default function ShelterPage() {
                                                         />
                                                     </TableCell>
                                                     <TableCell align="right"><Link
-                                                        to={{pathname: "/pet-details", state: pet.id}}>{pet.name}</Link></TableCell>
+                                                        to={{pathname: "/pet-details", state: pet.id}}>{capitalize(pet.name)}</Link></TableCell>
                                                     <TableCell align="right">{pet.gender}</TableCell>
                                                     <TableCell align="right">{pet.age}</TableCell>
                                                     <TableCell align="right">{pet.race}</TableCell>
@@ -845,7 +850,7 @@ export default function ShelterPage() {
                                                         />
                                                     </TableCell>
                                                     <TableCell align="right"><Link
-                                                        to={{pathname: "/pet-details", state: pet.id}}>{pet.name}</Link></TableCell>
+                                                        to={{pathname: "/pet-details", state: pet.id}}>{capitalize(pet.name)}</Link></TableCell>
                                                     <TableCell align="right">{pet.gender}</TableCell>
                                                     <TableCell align="right">{pet.age}</TableCell>
                                                     <TableCell align="right">{pet.race}</TableCell>
