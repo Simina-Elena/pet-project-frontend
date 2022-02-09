@@ -758,7 +758,7 @@ export default function ShelterPage() {
                             <TabContext value={valueTabs}>
                                 <TabList onChange={handleChangeTabs} aria-label="lab API tabs">
                                     {activities.map((activity) =>
-                                        <Tab label={activity.activityType} value={activity.id}/>
+                                        <Tab key={activity.id} label={activity.activityType} value={activity.id}/>
                                     )}
                                 </TabList>
                                 {activities.map((activity) =>

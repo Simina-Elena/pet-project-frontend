@@ -48,7 +48,7 @@ export default function ShelterInfo(props) {
         let email = values.email
         let phoneNumber = values.phoneNumber
         let date = new Date(values.date.getFullYear() + '-' + (values.date.getMonth() + 1) + '-' + (values.date.getDate() + 1)).toISOString().substring(0, 10)
-        const data = await axios.patch(`http://localhost:8080/api/shelter/profile-update/${AuthService.getCurrentUser().id}`,
+        const data = await axios.patch(`http://localhost:8080/api/shelter/profile-update/${AuthService.getCurrentUser().username}`,
             {
                 username,
                 address,
@@ -81,6 +81,10 @@ export default function ShelterInfo(props) {
     const handleChange = (prop) => (event) => {
         setValues({...values, [prop]: event.target.value});
     };
+
+    const address = 'city: ' + user.address.city + ', country: ' + user.address.country +
+        ', street: ' + user.address.street + ', number: ' + user.address.number +
+        ', zip code: ' + user.address.zip
 
     const style = {
         position: 'absolute',
@@ -229,7 +233,7 @@ export default function ShelterInfo(props) {
                             <HomeIcon/>
                         </Avatar>
                     </ListItemAvatar>
-                    <ListItemText primary="Address" secondary={user.address.country}/>
+                    <ListItemText primary="Address" secondary={address}/>
                 </ListItem>
                 <Divider variant="inset" component="li"/>
                 <ListItem>

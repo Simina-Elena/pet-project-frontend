@@ -34,6 +34,7 @@ import {Input, List, PhotoCamera} from "@mui/icons-material";
 import {styled} from "@mui/material/styles";
 import Carousel from "nuka-carousel";
 import FolderIcon from '@mui/icons-material/Folder';
+import moment from "moment";
 
 
 const theme = createTheme({
@@ -52,7 +53,6 @@ export default function PetDetails(props) {
     const [pet, setPet] = useState({});
     const [gender, setGender] = useState('');
     const [open, setOpen] = useState(false);
-    const [openModalPictures, setOpenModalPictures] = useState(false);
     const [file, setFile] = useState([]);
     const [photos, setPhotos] = useState([]);
     const [values, setValues] = useState({
@@ -130,6 +130,7 @@ export default function PetDetails(props) {
         values.name = pet.name
         values.description = pet.description
         values.color = pet.color
+        setGender(pet.gender)
         setOpen(true)
     };
 
@@ -149,13 +150,12 @@ export default function PetDetails(props) {
     const handleEditPet = async (e) => {
         e.preventDefault()
         console.log(values)
-        let name = values.name
-        let age = values.age
-        let color = values.color
-        let race = values.race
-        let description = values.description
-        let date = new Date(values.date.getFullYear() + '-' + (values.date.getMonth() + 1) + '-' + (values.date.getDate()+1)).toISOString().substring(0, 10)
-        //TODO: verify algorithm for last day of month
+        const name = values.name
+        const age = values.age
+        const color = values.color
+        const race = values.race
+        const description = values.description
+        const date = moment(values.date).format('YYYY-MM-DD')
         await axios.patch(`http://localhost:8080/api/pet/edit/${petId}`,
             {
                 name,
@@ -230,7 +230,7 @@ export default function PetDetails(props) {
                             <Stack direction="row" spacing={2}> <Input accept="image/*" id="icon-button-file"
                                                                        type="file"
                                                                        onChange={(e) => setFile(e.target.files[0])}/>
-                                <IconButton color="primary" aria-label="upload picture" component="span">
+                                <IconButton color="primary"  component="span">
                                     <PhotoCamera color="secondary"/>
                                 </IconButton>
                                 <Typography>{file.name}</Typography>
@@ -259,7 +259,7 @@ export default function PetDetails(props) {
                                 </Typography>
                                 <Typography variant="h6" color="text.secondary">
                                     <img className="margin-flex" width='30px' src="/assets/gender.png"
-                                    /> <span className="mr-10">Race: {pet.race}</span>
+                                    /> <span className="mr-10">Breed: {pet.race}</span>
                                 </Typography>
                                 <Typography variant="h6" color="text.secondary">
                                     <img className="margin-flex" width='30px' src="/assets/gender1.png"
@@ -331,7 +331,7 @@ export default function PetDetails(props) {
                                     onChange={handleChange('age')}
                                 />
                                 <TextField
-                                    label="race"
+                                    label="breed"
                                     id="race"
                                     sx={{m: 1, width: '50ch'}}
                                     color="secondary"
@@ -359,13 +359,14 @@ export default function PetDetails(props) {
                                 />
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                                     <DatePicker
+                                        views={['day']}
                                         label="Joined date"
                                         value={values.date}
                                         onChange={(newValue) => {
                                             setValues({...values, ['date']: newValue});
                                         }}
                                         renderInput={(params) => <TextField {...params} />}
-                                    />
+                                     />
                                 </LocalizationProvider>
                                 <Button sx={{
                                     margin: 'auto', mt: '20px', display: 'table-cell', verticalAlign: 'bottom',
