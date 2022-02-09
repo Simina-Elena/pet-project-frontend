@@ -155,7 +155,7 @@ export default function PetDetails(props) {
         let race = values.race
         let description = values.description
         let date = new Date(values.date.getFullYear() + '-' + (values.date.getMonth() + 1) + '-' + (values.date.getDate()+1)).toISOString().substring(0, 10)
-        //TODO: verify algorithm for 31 ian
+        //TODO: verify algorithm for last day of month
         await axios.patch(`http://localhost:8080/api/pet/edit/${petId}`,
             {
                 name,
@@ -168,15 +168,6 @@ export default function PetDetails(props) {
             })
         handleClose()
         await fetchPet()
-    }
-
-    //Delete a picture
-    const handleOpenDeleteAPicture = () => {
-        setOpenModalPictures(true)
-    }
-
-    const handleCloseModalPictures = () => {
-        setOpenModalPictures(false)
     }
 
     const style = {

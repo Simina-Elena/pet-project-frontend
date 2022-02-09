@@ -48,7 +48,7 @@ import {styled} from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import ShelterInfo from "../../components/ShelterInfo";
 
-const Search = styled('div')(({ theme }) => ({
+const Search = styled('div')(({theme}) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
     backgroundColor: alpha(theme.palette.common.white, 0.15),
@@ -63,7 +63,7 @@ const Search = styled('div')(({ theme }) => ({
     },
 }));
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
+const SearchIconWrapper = styled('div')(({theme}) => ({
     padding: theme.spacing(0, 2),
     height: '100%',
     position: 'absolute',
@@ -73,7 +73,7 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
     justifyContent: 'center',
 }));
 
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
+const StyledInputBase = styled(InputBase)(({theme}) => ({
     color: 'inherit',
     '& .MuiInputBase-input': {
         padding: theme.spacing(1, 1, 1, 0),
@@ -107,6 +107,7 @@ export default function ShelterPage() {
     const [photos, setPhotos] = useState([])
     let [gender, setGender] = useState();
     const [values, setValues] = useState({
+        loading: true,
         name: '',
         age: '',
         race: '',
@@ -144,6 +145,7 @@ export default function ShelterPage() {
         const resp = await data.data
         console.log(resp)
         setUser(resp)
+        setValues({...values, loading: false})
     }
 
     const getPets = async () => {
@@ -174,6 +176,7 @@ export default function ShelterPage() {
         setFile('')
         await getImages()
     }
+    //TODO: verify click add image
 
     const getImages = async () => {
         const data = await axios.get(`http://localhost:8080/api/images/for-shelter/${AuthService.getCurrentUser().id}`, {
@@ -208,7 +211,6 @@ export default function ShelterPage() {
 
     const handleClick = (event, name) => {
         const selectedIndex = selected.indexOf(name);
-        console.log(selectedIndex)
         let newSelected = [];
 
         if (selectedIndex === -1) {
@@ -225,7 +227,6 @@ export default function ShelterPage() {
         }
 
         setSelected(newSelected);
-        console.log(selected)
     };
 
     const handleChangePage = (event, newPage) => {
@@ -414,9 +415,9 @@ export default function ShelterPage() {
         rowCount: PropTypes.number.isRequired
     };
 
-    const handleSearchPet = (e) =>{
+    const handleSearchPet = (e) => {
         console.log(e.target.value)
-        if(e.key === 'Enter')
+        if (e.key === 'Enter')
             setFilteredPets(pets.filter(pet => capitalize(pet.name).includes(e.target.value)))
     }
 
@@ -456,7 +457,8 @@ export default function ShelterPage() {
                         id="tableTitle"
                         component="div"
                     >
-                       <Button sx={{color: 'black', fontFamily: 'Lora', fontWeight: 600, fontSize: '1rem'}} onClick={() => setFilteredPets([])}>Pets</Button>
+                        <Button sx={{color: 'black', fontFamily: 'Lora', fontWeight: 600, fontSize: '1rem'}}
+                                onClick={() => setFilteredPets([])}>Pets</Button>
                     </Typography>
                 )}
 
@@ -470,11 +472,11 @@ export default function ShelterPage() {
                     <Tooltip title="Search for pet">
                         <Search>
                             <SearchIconWrapper>
-                                <SearchIcon />
+                                <SearchIcon/>
                             </SearchIconWrapper>
                             <StyledInputBase
                                 placeholder="Search…"
-                                inputProps={{ 'aria-label': 'search' }}
+                                inputProps={{'aria-label': 'search'}}
                                 onKeyDown={handleSearchPet}
                             />
                         </Search>
@@ -547,346 +549,358 @@ export default function ShelterPage() {
         return petName.charAt(0).toUpperCase() + petName.slice(1)
     }
 
-    return (
-        <div>
-            <Container maxWidth="md">
-                <ImageList sx={{width: 'auto', height: 250, padding: '10px'}} cols={2} rowHeight={350}>
-                    {photos.map((item) => (
-                        <ImageListItem key={item.name}>
-                            <img
-                                src={'https://petprojectimagestorage.s3.amazonaws.com/' + item.name}
-                                alt={item.name}
-                                loading="lazy"
-                            />
-                            <ImageListItemBar
-                                sx={{
-                                background:
-                                    'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
-                                    'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
-                            }}
-                                position="top"
-                                actionIcon={
-                                    <IconButton
-                                        sx={{ color: 'white' }}
-                                        aria-label={`star ${item.title}`}
-                                    >
-                                        <DeleteIcon onClick={()=>handleDeletePicture(item.name)}/>
-                                    </IconButton>
-                                }
-                                actionPosition="left"
-                            />
-                        </ImageListItem>
-                    ))}
-                </ImageList>
-                <Box sx={{padding: '10px'}}>
-                    <Typography variant="h3" align="center"
-                                bgcolor='#F0E6EF' fontFamily='Lora'
-                                fontWeight='400'>{AuthService.getCurrentUser().username}
-                    </Typography>
-
-                    <label htmlFor="icon-button-file">
-                        <Stack direction="row" spacing={2}> <Input accept="image/*" id="icon-button-file" type="file"
-                                                                   onChange={(e) => setFile(e.target.files[0])}/>
-                            <IconButton color="primary" aria-label="upload picture" component="span">
-                                <PhotoCamera color="secondary"/>
-                            </IconButton>
-                            <Typography>{file.name}</Typography>
-                            <Button sx={{fontFamily: 'Lora', fontWeight: 600}} color='secondary' onClick={handleImage}>Upload picture</Button></Stack>
-                    </label>
-
-                    <Stack direction="row" spacing={2} padding='10px'>
-                        <Button color="secondary" variant="contained" sx={{fontFamily: 'Lora', fontWeight: '600'}}
-                                onClick={handleOpen}>Add pet</Button>
-                        {/*AddPet modal start*/}
-                        <Modal
-                            open={openPetModal}
-                            onClose={handleClose}
-                            aria-labelledby="modal-modal-title"
-                            aria-describedby="modal-modal-description"
-                        >
-                            <Box sx={style}>
-                                <img width='30px' className="mr-2" src="/assets/gender.png" align='left'/>
-                                <Typography id="modal-modal-title" variant="h6" component="h2" mb='10px'
-                                            fontFamily='Lora' fontWeight='600'>
-                                    Add pet
-                                </Typography>
-                                <Box onSubmit={onSubmitAddPet} component="form"
-                                     sx={{display: 'table', textAlign: 'center'}}>
-                                    <TextField
-                                        label="name"
-                                        id="name"
-                                        sx={{m: 1, width: '50ch'}}
-                                        color="secondary"
-                                        size="small"
-                                        value={values.name}
-                                        onChange={handleChange('name')}
-                                    />
-                                    <FormControl>
-                                        <InputLabel color="secondary" id="select-gender">gender</InputLabel>
-                                        <Select
-                                            color="secondary"
-                                            sx={{width: '21ch'}}
-                                            labelId="select-gender"
-                                            id="gender"
-                                            value={gender}
-                                            label="gender"
-                                            onChange={handleChangeGender}>
-                                            {genders.map((gender) => (
-                                                <MenuItem key={gender.value} value={gender.value}>
-                                                    {gender.label}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                    <TextField
-                                        label="age"
-                                        id="age"
-                                        sx={{m: 1, width: '50ch'}}
-                                        color="secondary"
-                                        size="small"
-                                        value={values.age}
-                                        onChange={handleChange('age')}
-                                    />
-                                    <TextField
-                                        label="race"
-                                        id="race"
-                                        sx={{m: 1, width: '50ch'}}
-                                        color="secondary"
-                                        size="small"
-                                        value={values.race}
-                                        onChange={handleChange('race')}
-                                    />
-                                    <TextField
-                                        label="color"
-                                        id="color"
-                                        sx={{m: 1, width: '50ch'}}
-                                        color="secondary"
-                                        size="small"
-                                        value={values.color}
-                                        onChange={handleChange('color')}
-                                    />
-                                    <TextField
-                                        label="description"
-                                        id="description"
-                                        sx={{m: 1, width: '50ch'}}
-                                        color="secondary"
-                                        size="small"
-                                        value={values.description}
-                                        onChange={handleChange('description')}
-                                    />
-                                    <Button sx={{
-                                        margin: 'auto', mt: '20px', display: 'table-cell', verticalAlign: 'bottom',
-                                        fontFamily: 'Lora', fontWeight: '600'
-                                    }}
-                                            type="submit"
-                                            color="secondary" variant="contained"
-                                    >
-                                        Submit
-                                    </Button>
-                                </Box>
-                            </Box>
-                        </Modal>
-                        {/*AddPet modal end*/}
-                        <Button color="secondary" variant="contained"
-                                sx={{fontFamily: 'Lora', fontWeight: '600'}} onClick={handleOpenActivityModal}>Add
-                            activity</Button>
-
-                        {/*Add activity modal start*/}
-                        <Modal
-                            open={openActivityModal}
-                            onClose={handleCloseActivityModal}
-                            aria-labelledby="modal-title"
-                            aria-describedby="modal-modal-description"
-                        >
-                            <Box sx={style}>
-                                <Typography id="modal-title" variant="h6" component="h2" mb='10px'
-                                            fontFamily='Lora' fontWeight='600'>
-                                    Add activity
-                                </Typography>
-                                <Box onSubmit={onSubmitAddActivity} component="form"
-                                     sx={{display: 'table', textAlign: 'center'}}>
-                                    <TextField
-                                        label="capacity"
-                                        id="capacity"
-                                        sx={{m: 1, width: '50ch'}}
-                                        color="secondary"
-                                        size="small"
-                                        value={values.capacity}
-                                        onChange={handleChange('capacity')}
-                                    />
-                                    <FormControl>
-                                        <InputLabel color="secondary" id="select-type">type</InputLabel>
-                                        <Select
-                                            color="secondary"
-                                            sx={{width: '21ch'}}
-                                            labelId="select-type"
-                                            id="type"
-                                            value={values.type}
-                                            label="type"
-                                            onChange={handleChange('type')}>
-                                            {activityTypes.map((activity) => (
-                                                <MenuItem key={activity.value} value={activity.value}>
-                                                    {activity.label}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                    <Button sx={{
-                                        margin: 'auto', mt: '20px', display: 'table-cell', verticalAlign: 'bottom',
-                                        fontFamily: 'Lora', fontWeight: '600'
-                                    }}
-                                            type="submit"
-                                            color="secondary" variant="contained"
-                                    >
-                                        Submit
-                                    </Button>
-                                </Box>
-                            </Box>
-                        </Modal>
-                        {/*Add activity end modal*/}
-                    </Stack>
-                    {/*Activity tabs*/}
-                    <Box sx={{width: '100%', typography: 'body1'}}>
-                        <TabContext value={valueTabs}>
-                            <TabList onChange={handleChangeTabs} aria-label="lab API tabs">
-                                {activities.map((activity) =>
-                                    <Tab label={activity.activityType} value={activity.id}/>
-                                )}
-                            </TabList>
-                            {activities.map((activity) =>
-                                <TabPanel value={activity.id}> Capacity: {activity.capacity} room(s)
-                                    <img width='30px' align="right" src="/assets/delete.svg"
-                                         onClick={handleDeleteActivity}/>
-                                    <img align="right" width="30px" src="/assets/minus.png"
-                                         onClick={handleDecreaseCapacity}/>
-                                    <img align="right" width="30px" src="/assets/plus.svg"
-                                         onClick={handleIncreaseCapacity}/>
-                                </TabPanel>
-                            )}
-
-                        </TabContext>
-                    </Box>
-
-                    <Paper sx={{mb: 2}}>
-                        <ShelterInfo props={user}/>
-                    </Paper>
-
-                    {/*pets table*/}
-                    <Paper sx={{width: '100%', mb: 2}}>
-                        <EnhancedTableToolbar numSelected={selected.length}/>
-                        <TableContainer>
-                            <Table
-                                sx={{minWidth: 750}}
-                                aria-labelledby="tableTitle"
-                                size={dense ? 'small' : 'medium'}
-                            >
-                                <EnhancedTableHead
-                                    numSelected={selected.length}
-                                    order={order}
-                                    orderBy={orderBy}
-                                    onSelectAllClick={handleSelectAllClick}
-                                    onRequestSort={handleRequestSort}
-                                    rowCount={pets.length}
+    if (values.loading)
+        return (<div>loading...</div>)
+    else
+        return (
+            <div>
+                <Container maxWidth="md">
+                    <ImageList sx={{width: 'auto', height: 250, padding: '10px'}} cols={2} rowHeight={350}>
+                        {photos.map((item) => (
+                            <ImageListItem key={item.name}>
+                                <img
+                                    src={'https://petprojectimagestorage.s3.amazonaws.com/' + item.name}
+                                    alt={item.name}
+                                    loading="lazy"
                                 />
-                                <TableBody>
-                                    {filteredPets.length === 0 ? stableSort(pets, getComparator(order, orderBy))
-                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                        .map((pet, index) => {
-                                            const isItemSelected = isSelected(pet.id);
-                                            const labelId = `enhanced-table-checkbox-${index}`;
-
-                                            return (
-                                                <TableRow
-                                                    hover
-                                                    role="checkbox"
-                                                    aria-checked={isItemSelected}
-                                                    tabIndex={-1}
-                                                    key={pet.id}
-                                                    selected={isItemSelected}
-                                                >
-                                                    <TableCell padding="checkbox">
-                                                        <Checkbox
-                                                            color="primary"
-                                                            checked={isItemSelected}
-                                                            inputProps={{
-                                                                'aria-labelledby': labelId,
-                                                            }}
-                                                            onClick={(event) => handleClick(event, pet.id)}
-
-                                                        />
-                                                    </TableCell>
-                                                    <TableCell align="right"><Link
-                                                        to={{pathname: "/pet-details", state: pet.id}}>{capitalize(pet.name)}</Link></TableCell>
-                                                    <TableCell align="right">{pet.gender}</TableCell>
-                                                    <TableCell align="right">{pet.age}</TableCell>
-                                                    <TableCell align="right">{pet.race}</TableCell>
-                                                    <TableCell align="right">{pet.color}</TableCell>
-                                                </TableRow>
-                                            );
-                                        }) : stableSort(filteredPets, getComparator(order, orderBy))
-                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                        .map((pet, index) => {
-                                            const isItemSelected = isSelected(pet.id);
-                                            const labelId = `enhanced-table-checkbox-${index}`;
-
-                                            return (
-                                                <TableRow
-                                                    hover
-                                                    role="checkbox"
-                                                    aria-checked={isItemSelected}
-                                                    tabIndex={-1}
-                                                    key={pet.id}
-                                                    selected={isItemSelected}
-                                                >
-                                                    <TableCell padding="checkbox">
-                                                        <Checkbox
-                                                            color="primary"
-                                                            checked={isItemSelected}
-                                                            inputProps={{
-                                                                'aria-labelledby': labelId,
-                                                            }}
-                                                            onClick={(event) => handleClick(event, pet.id)}
-
-                                                        />
-                                                    </TableCell>
-                                                    <TableCell align="right"><Link
-                                                        to={{pathname: "/pet-details", state: pet.id}}>{capitalize(pet.name)}</Link></TableCell>
-                                                    <TableCell align="right">{pet.gender}</TableCell>
-                                                    <TableCell align="right">{pet.age}</TableCell>
-                                                    <TableCell align="right">{pet.race}</TableCell>
-                                                    <TableCell align="right">{pet.color}</TableCell>
-                                                </TableRow>
-                                            );
-                                        })}
-
-                                    {emptyRows > 0 && (
-                                        <TableRow
-                                            style={{
-                                                height: (dense ? 33 : 53) * emptyRows,
-                                            }}
+                                <ImageListItemBar
+                                    sx={{
+                                        background:
+                                            'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
+                                            'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+                                    }}
+                                    position="top"
+                                    actionIcon={
+                                        <IconButton
+                                            sx={{color: 'white'}}
+                                            aria-label={`star ${item.title}`}
                                         >
-                                            <TableCell colSpan={6}/>
-                                        </TableRow>
+                                            <DeleteIcon onClick={() => handleDeletePicture(item.name)}/>
+                                        </IconButton>
+                                    }
+                                    actionPosition="left"
+                                />
+                            </ImageListItem>
+                        ))}
+                    </ImageList>
+                    <Box sx={{padding: '10px'}}>
+                        <Typography variant="h3" align="center"
+                                    bgcolor='#F0E6EF' fontFamily='Lora'
+                                    fontWeight='400'>{AuthService.getCurrentUser().username}
+                        </Typography>
+
+                        <label htmlFor="icon-button-file">
+                            <Stack direction="row" spacing={2}> <Input accept="image/*" id="icon-button-file"
+                                                                       type="file"
+                                                                       onChange={(e) => setFile(e.target.files[0])}/>
+                                <IconButton color="primary" aria-label="upload picture" component="span">
+                                    <PhotoCamera color="secondary"/>
+                                </IconButton>
+                                <Typography>{file.name}</Typography>
+                                <Button sx={{fontFamily: 'Lora', fontWeight: 600}} color='secondary'
+                                        onClick={handleImage}>Upload
+                                    picture</Button></Stack>
+                        </label>
+
+                        <Stack direction="row" spacing={2} padding='10px'>
+                            <Button color="secondary" variant="contained" sx={{fontFamily: 'Lora', fontWeight: '600'}}
+                                    onClick={handleOpen}>Add pet</Button>
+                            {/*AddPet modal start*/}
+                            <Modal
+                                open={openPetModal}
+                                onClose={handleClose}
+                                aria-labelledby="modal-modal-title"
+                                aria-describedby="modal-modal-description"
+                            >
+                                <Box sx={style}>
+                                    <img width='30px' className="mr-2" src="/assets/gender.png" align='left'/>
+                                    <Typography id="modal-modal-title" variant="h6" component="h2" mb='10px'
+                                                fontFamily='Lora' fontWeight='600'>
+                                        Add pet
+                                    </Typography>
+                                    <Box onSubmit={onSubmitAddPet} component="form"
+                                         sx={{display: 'table', textAlign: 'center'}}>
+                                        <TextField
+                                            label="name"
+                                            id="name"
+                                            sx={{m: 1, width: '50ch'}}
+                                            color="secondary"
+                                            size="small"
+                                            value={values.name}
+                                            onChange={handleChange('name')}
+                                        />
+                                        <FormControl>
+                                            <InputLabel color="secondary" id="select-gender">gender</InputLabel>
+                                            <Select
+                                                color="secondary"
+                                                sx={{width: '21ch'}}
+                                                labelId="select-gender"
+                                                id="gender"
+                                                value={gender}
+                                                label="gender"
+                                                onChange={handleChangeGender}>
+                                                {genders.map((gender) => (
+                                                    <MenuItem key={gender.value} value={gender.value}>
+                                                        {gender.label}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                        <TextField
+                                            label="age"
+                                            id="age"
+                                            sx={{m: 1, width: '50ch'}}
+                                            color="secondary"
+                                            size="small"
+                                            value={values.age}
+                                            onChange={handleChange('age')}
+                                        />
+                                        <TextField
+                                            label="race"
+                                            id="race"
+                                            sx={{m: 1, width: '50ch'}}
+                                            color="secondary"
+                                            size="small"
+                                            value={values.race}
+                                            onChange={handleChange('race')}
+                                        />
+                                        <TextField
+                                            label="color"
+                                            id="color"
+                                            sx={{m: 1, width: '50ch'}}
+                                            color="secondary"
+                                            size="small"
+                                            value={values.color}
+                                            onChange={handleChange('color')}
+                                        />
+                                        <TextField
+                                            label="description"
+                                            id="description"
+                                            sx={{m: 1, width: '50ch'}}
+                                            color="secondary"
+                                            size="small"
+                                            value={values.description}
+                                            onChange={handleChange('description')}
+                                        />
+                                        <Button sx={{
+                                            margin: 'auto', mt: '20px', display: 'table-cell', verticalAlign: 'bottom',
+                                            fontFamily: 'Lora', fontWeight: '600'
+                                        }}
+                                                type="submit"
+                                                color="secondary" variant="contained"
+                                        >
+                                            Submit
+                                        </Button>
+                                    </Box>
+                                </Box>
+                            </Modal>
+                            {/*AddPet modal end*/}
+                            <Button color="secondary" variant="contained"
+                                    sx={{fontFamily: 'Lora', fontWeight: '600'}} onClick={handleOpenActivityModal}>Add
+                                activity</Button>
+
+                            {/*Add activity modal start*/}
+                            <Modal
+                                open={openActivityModal}
+                                onClose={handleCloseActivityModal}
+                                aria-labelledby="modal-title"
+                                aria-describedby="modal-modal-description"
+                            >
+                                <Box sx={style}>
+                                    <Typography id="modal-title" variant="h6" component="h2" mb='10px'
+                                                fontFamily='Lora' fontWeight='600'>
+                                        Add activity
+                                    </Typography>
+                                    <Box onSubmit={onSubmitAddActivity} component="form"
+                                         sx={{display: 'table', textAlign: 'center'}}>
+                                        <TextField
+                                            label="capacity"
+                                            id="capacity"
+                                            sx={{m: 1, width: '50ch'}}
+                                            color="secondary"
+                                            size="small"
+                                            value={values.capacity}
+                                            onChange={handleChange('capacity')}
+                                        />
+                                        <FormControl>
+                                            <InputLabel color="secondary" id="select-type">type</InputLabel>
+                                            <Select
+                                                color="secondary"
+                                                sx={{width: '21ch'}}
+                                                labelId="select-type"
+                                                id="type"
+                                                value={values.type}
+                                                label="type"
+                                                onChange={handleChange('type')}>
+                                                {activityTypes.map((activity) => (
+                                                    <MenuItem key={activity.value} value={activity.value}>
+                                                        {activity.label}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                        <Button sx={{
+                                            margin: 'auto', mt: '20px', display: 'table-cell', verticalAlign: 'bottom',
+                                            fontFamily: 'Lora', fontWeight: '600'
+                                        }}
+                                                type="submit"
+                                                color="secondary" variant="contained"
+                                        >
+                                            Submit
+                                        </Button>
+                                    </Box>
+                                </Box>
+                            </Modal>
+                            {/*Add activity end modal*/}
+                        </Stack>
+                        {/*Activity tabs*/}
+                        <Box sx={{width: '100%', typography: 'body1'}}>
+                            <TabContext value={valueTabs}>
+                                <TabList onChange={handleChangeTabs} aria-label="lab API tabs">
+                                    {activities.map((activity) =>
+                                        <Tab label={activity.activityType} value={activity.id}/>
                                     )}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <TablePagination
-                            rowsPerPageOptions={[5, 10, 25]}
-                            component="div"
-                            count={pets.length}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            onPageChange={handleChangePage}
-                            onRowsPerPageChange={handleChangeRowsPerPage}
+                                </TabList>
+                                {activities.map((activity) =>
+                                    <TabPanel value={activity.id}> Capacity: {activity.capacity} room(s)
+                                        <img width='30px' align="right" src="/assets/delete.svg"
+                                             onClick={handleDeleteActivity}/>
+                                        <img align="right" width="30px" src="/assets/minus.png"
+                                             onClick={handleDecreaseCapacity}/>
+                                        <img align="right" width="30px" src="/assets/plus.svg"
+                                             onClick={handleIncreaseCapacity}/>
+                                    </TabPanel>
+                                )}
+
+                            </TabContext>
+                        </Box>
+
+                        <Paper sx={{mb: 2}}>
+                            <ShelterInfo user={user}/>
+                        </Paper>
+
+                        {/*pets table*/}
+                        <Paper sx={{width: '100%', mb: 2}}>
+                            <EnhancedTableToolbar numSelected={selected.length}/>
+                            <TableContainer>
+                                <Table
+                                    sx={{minWidth: 750}}
+                                    aria-labelledby="tableTitle"
+                                    size={dense ? 'small' : 'medium'}
+                                >
+                                    <EnhancedTableHead
+                                        numSelected={selected.length}
+                                        order={order}
+                                        orderBy={orderBy}
+                                        onSelectAllClick={handleSelectAllClick}
+                                        onRequestSort={handleRequestSort}
+                                        rowCount={pets.length}
+                                    />
+                                    <TableBody>
+                                        {filteredPets.length === 0 ? stableSort(pets, getComparator(order, orderBy))
+                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                            .map((pet, index) => {
+                                                const isItemSelected = isSelected(pet.id);
+                                                const labelId = `enhanced-table-checkbox-${index}`;
+
+                                                return (
+                                                    <TableRow
+                                                        hover
+                                                        role="checkbox"
+                                                        aria-checked={isItemSelected}
+                                                        tabIndex={-1}
+                                                        key={pet.id}
+                                                        selected={isItemSelected}
+                                                    >
+                                                        <TableCell padding="checkbox">
+                                                            <Checkbox
+                                                                color="primary"
+                                                                checked={isItemSelected}
+                                                                inputProps={{
+                                                                    'aria-labelledby': labelId,
+                                                                }}
+                                                                onClick={(event) => handleClick(event, pet.id)}
+
+                                                            />
+                                                        </TableCell>
+                                                        <TableCell align="right"><Link
+                                                            to={{
+                                                                pathname: "/pet-details",
+                                                                state: pet.id
+                                                            }}>{capitalize(pet.name)}</Link></TableCell>
+                                                        <TableCell align="right">{pet.gender}</TableCell>
+                                                        <TableCell align="right">{pet.age}</TableCell>
+                                                        <TableCell align="right">{pet.race}</TableCell>
+                                                        <TableCell align="right">{pet.color}</TableCell>
+                                                    </TableRow>
+                                                );
+                                            }) : stableSort(filteredPets, getComparator(order, orderBy))
+                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                            .map((pet, index) => {
+                                                const isItemSelected = isSelected(pet.id);
+                                                const labelId = `enhanced-table-checkbox-${index}`;
+
+                                                return (
+                                                    <TableRow
+                                                        hover
+                                                        role="checkbox"
+                                                        aria-checked={isItemSelected}
+                                                        tabIndex={-1}
+                                                        key={pet.id}
+                                                        selected={isItemSelected}
+                                                    >
+                                                        <TableCell padding="checkbox">
+                                                            <Checkbox
+                                                                color="primary"
+                                                                checked={isItemSelected}
+                                                                inputProps={{
+                                                                    'aria-labelledby': labelId,
+                                                                }}
+                                                                onClick={(event) => handleClick(event, pet.id)}
+
+                                                            />
+                                                        </TableCell>
+                                                        <TableCell align="right"><Link
+                                                            to={{
+                                                                pathname: "/pet-details",
+                                                                state: pet.id
+                                                            }}>{capitalize(pet.name)}</Link></TableCell>
+                                                        <TableCell align="right">{pet.gender}</TableCell>
+                                                        <TableCell align="right">{pet.age}</TableCell>
+                                                        <TableCell align="right">{pet.race}</TableCell>
+                                                        <TableCell align="right">{pet.color}</TableCell>
+                                                    </TableRow>
+                                                );
+                                            })}
+
+                                        {emptyRows > 0 && (
+                                            <TableRow
+                                                style={{
+                                                    height: (dense ? 33 : 53) * emptyRows,
+                                                }}
+                                            >
+                                                <TableCell colSpan={6}/>
+                                            </TableRow>
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                            <TablePagination
+                                rowsPerPageOptions={[5, 10, 25]}
+                                component="div"
+                                count={pets.length}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                            />
+                        </Paper>
+                        <FormControlLabel
+                            control={<Switch checked={dense} onChange={handleChangeDense}/>}
+                            label="Dense padding"
                         />
-                    </Paper>
-                    <FormControlLabel
-                        control={<Switch checked={dense} onChange={handleChangeDense}/>}
-                        label="Dense padding"
-                    />
-                </Box>
-            </Container>
-        </div>
-    )
+                    </Box>
+                </Container>
+            </div>
+        )
 }
