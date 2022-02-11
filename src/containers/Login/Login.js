@@ -14,12 +14,13 @@ import AuthService from "../../services/auth.service";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import * as React from "react";
 import {useAtom} from "jotai";
-import {userAtom} from "../../App";
+import {nameAtom, userAtom} from "../../App";
 
 
 function Login() {
     let history = useHistory()
     const [userLogged, setUserLogged] = useAtom(userAtom)
+    const [usernameAtom, setUsernameAtom] = useAtom(nameAtom)
 
     const [values, setValues] = useState({
         username: '',
@@ -35,6 +36,7 @@ function Login() {
         let user = {username, password};
         await AuthService.login(user)
         setUserLogged(true)
+        setUsernameAtom(AuthService.getCurrentUser().username)
         history.push("/dashboard")
     };
 

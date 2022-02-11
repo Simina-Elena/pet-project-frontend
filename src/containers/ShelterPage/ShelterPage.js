@@ -47,6 +47,8 @@ import {Input, PhotoCamera} from "@mui/icons-material";
 import {styled} from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import ShelterInfo from "../../components/ShelterInfo";
+import {useAtom} from "jotai";
+import {nameAtom} from "../../App";
 
 const Search = styled('div')(({theme}) => ({
     position: 'relative',
@@ -92,6 +94,7 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
 
 export default function ShelterPage() {
     const [user, setUser] = useState({})
+    const [usernameAtom] = useAtom(nameAtom)
     const [pets, setPets] = useState([])
     const [filteredPets, setFilteredPets] = useState([])
     const [activities, setActivities] = useState([])
@@ -192,7 +195,7 @@ export default function ShelterPage() {
         getPets()
         getActivities()
         getImages()
-    }, [])
+    }, [usernameAtom])
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -586,7 +589,7 @@ export default function ShelterPage() {
                     <Box sx={{padding: '10px'}}>
                         <Typography variant="h3" align="center"
                                     bgcolor='#F0E6EF' fontFamily='Lora'
-                                    fontWeight='400'>{AuthService.getCurrentUser().username}
+                                    fontWeight='400'>{usernameAtom}
                         </Typography>
 
                         <label htmlFor="icon-button-file">

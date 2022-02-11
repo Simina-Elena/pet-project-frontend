@@ -7,8 +7,10 @@ import Layout from "./components/Layout/Layout";
 import ShelterPage from "./containers/ShelterPage/ShelterPage";
 import { atom } from "jotai";
 import PetDetails from "./containers/PetDetails/PetDetails";
+import AuthService from "./services/auth.service";
 
-export const userAtom = atom(true);
+export const userAtom = atom(AuthService.getCurrentUser() !== null);
+export const nameAtom = atom(AuthService.getCurrentUser() !== null ? AuthService.getCurrentUser().username : "");
 
 export default function App() {
     return (

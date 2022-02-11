@@ -20,9 +20,12 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DatePicker from "@mui/lab/DatePicker";
 import authHeader from "../services/auth-header";
 import {useHistory} from "react-router-dom";
+import {useAtom} from "jotai";
+import {nameAtom} from "../App";
 
 export default function ShelterInfo(props) {
     const [user, setUser] = useState(props.user)
+    const [usernameAtom, setUsernameAtom] = useAtom(nameAtom)
     const [values, setValues] = useState({
         open: false,
         username: '',
@@ -59,6 +62,7 @@ export default function ShelterInfo(props) {
         const resp = data.data
         AuthService.addUserToLocalStorage(resp)
         setUser(resp)
+        setUsernameAtom(resp.username)
         handleClose()
     }
 
