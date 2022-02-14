@@ -10,7 +10,7 @@ import {
     OutlinedInput,
     TextField
 } from "@mui/material";
-import AuthService from "../../services/auth.service";
+import {AuthService} from "pet-project-frontend-sharedcomponents";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import * as React from "react";
 

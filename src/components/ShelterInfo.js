@@ -86,9 +86,11 @@ export default function ShelterInfo(props) {
         setValues({...values, [prop]: event.target.value});
     };
 
-    const address = 'city: ' + user.address.city + ', country: ' + user.address.country +
-        ', street: ' + user.address.street + ', number: ' + user.address.number +
-        ', zip code: ' + user.address.zip
+    let address = ""
+    if (user.address)
+        address = 'city: ' + user.address.city + ', country: ' + user.address.country +
+            ', street: ' + user.address.street + ', number: ' + user.address.number +
+            ', zip code: ' + user.address.zip
 
     const style = {
         position: 'absolute',
