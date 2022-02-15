@@ -60,7 +60,7 @@ const LandingPage = () => {
     }, []);
     return (
         <div className={classes.root}>
-            <CssBaseline />
+            <CssBaseline/>
             <div className={classes.choices}>
                 <Collapse in={checked}
                           {...(checked ? {timeout: 1000} : {})}
@@ -68,12 +68,14 @@ const LandingPage = () => {
                     <div className={classes.container}>
                         <h1 className={classes.title}>Welcome</h1>
                         <Stack direction="row" spacing={2}>
-                            <Link to={{pathname: "/register/shelter", state: 'shelter'}}>
+                            <Link to={{pathname: "/register/shelter"}}>
                                 <Button color='secondary' variant="contained"
                                         sx={{fontFamily: 'Lora', fontWeight: '600'}}>Register as shelter</Button>
                             </Link>
-                            <Button color="secondary" variant="contained"
-                                    sx={{fontFamily: 'Lora', fontWeight: '600'}}>Register as visitor</Button>
+                            <a href="http://localhost:3001/register/visitor">
+                                <Button color="secondary" variant="contained"
+                                        sx={{fontFamily: 'Lora', fontWeight: '600'}}>Register as visitor</Button>
+                            </a>
                         </Stack>
                         {/*<Scroll to="action" smooth={true}>*/}
                         {/*    <IconButton>*/}

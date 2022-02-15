@@ -14,7 +14,7 @@ import {AuthService} from "pet-project-frontend-sharedcomponents";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import * as React from "react";
 
-function RegisterShelter() {
+function RegisterShelter(props) {
     const [values, setValues] = useState({
         username: '',
         email: '',
@@ -25,17 +25,23 @@ function RegisterShelter() {
         showConfirmPassword: false,
     });
     let history = useHistory()
-
     const onFinishRegister = async (e) => {
         e.preventDefault()
         console.log(values)
+        console.log(props)
         let username = values.username;
         let password = values.confirmPassword;
         let email = values.email;
         let phoneNumber = values.phoneNumber
         let user = {username, password, email, phoneNumber};
-        await AuthService.registerShelter(user)
-        history.push("/login")
+        if(props.location.state === 'shelter') {
+            await AuthService.registerShelter(user)
+            history.push("/login")
+        } else if(props.location.state === 'visitor') {
+            await AuthService.registerVisitor(user)
+            history.push('/login')
+            console.log("la visitor")
+        }
     };
 
 

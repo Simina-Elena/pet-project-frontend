@@ -22,12 +22,6 @@ function Login() {
     const [userLogged, setUserLogged] = useAtom(userAtom)
     const [usernameAtom, setUsernameAtom] = useAtom(nameAtom)
 
-    const [values, setValues] = useState({
-        username: '',
-        password: '',
-        showPassword: false,
-    });
-
     const onFinishRegister = async (e) => {
         e.preventDefault()
         console.log(values)
@@ -40,6 +34,11 @@ function Login() {
         history.push("/dashboard")
     };
 
+    const [values, setValues] = useState({
+        username: '',
+        password: '',
+        showPassword: false,
+    });
 
     const handleChange = (prop) => (event) => {
         setValues({...values, [prop]: event.target.value});

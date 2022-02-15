@@ -6,13 +6,8 @@ const registerShelter = (user) => {
     return axios.post(API_URL + "register/shelter", user);
 };
 
-const registerVisitor = (username, email, password, phoneNumber) => {
-    return axios.post(API_URL + "register/visitor", {
-        username,
-        email,
-        password,
-        phoneNumber,
-    });
+const registerVisitor = (user) => {
+    return axios.post(API_URL + "register/visitor", user);
 };
 
 const login = (user) => {

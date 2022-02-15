@@ -1,5 +1,5 @@
 import Navbar from "../Navbar/Navbar";
-import Footer from "../Footer/Footer";
+import {Footer} from "pet-project-frontend-sharedcomponents";
 
 export default function Layout(props) {
     return (

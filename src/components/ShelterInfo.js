@@ -38,7 +38,7 @@ export default function ShelterInfo(props) {
         phoneNumber: '',
         date: new Date()
     });
-
+    console.log(props)
     const handleUpdateShelterInfo = async (e) => {
         e.preventDefault()
         let username = values.username
@@ -70,11 +70,13 @@ export default function ShelterInfo(props) {
         values.username = user.username
         values.email = user.email
         values.phoneNumber = user.phoneNumber
-        values.zip = user.address.zip
-        values.street = user.address.street
-        values.number = user.address.number
-        values.city = user.address.city
-        values.country = user.address.country
+        if (user.address) {
+            values.zip = user.address.zip
+            values.street = user.address.street
+            values.number = user.address.number
+            values.city = user.address.city
+            values.country = user.address.country
+        }
         setValues({...values, open: true})
     }
 
