@@ -184,21 +184,6 @@ export default function PetDetails(props) {
     };
 
 
-    const images = [
-        {
-            original: 'https://picsum.photos/id/1018/1000/600/',
-            thumbnail: 'https://picsum.photos/id/1018/250/150/',
-        },
-        {
-            original: 'https://picsum.photos/id/1015/1000/600/',
-            thumbnail: 'https://picsum.photos/id/1015/250/150/',
-        },
-        {
-            original: 'https://picsum.photos/id/1019/1000/600/',
-            thumbnail: 'https://picsum.photos/id/1019/250/150/',
-        },
-    ];
-
     const Input = styled('input')({
         display: 'none',
     });
@@ -308,7 +293,7 @@ export default function PetDetails(props) {
                                     <InputLabel color="secondary" id="select-gender">gender</InputLabel>
                                     <Select
                                         color="secondary"
-                                        sx={{width: '21ch'}}
+                                        sx={{width: '24ch'}}
                                         labelId="select-gender"
                                         id="gender"
                                         value={gender}

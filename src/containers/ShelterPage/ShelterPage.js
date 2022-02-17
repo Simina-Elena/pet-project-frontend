@@ -350,7 +350,7 @@ export default function ShelterPage() {
             id: 'race',
             numeric: true,
             disablePadding: false,
-            label: 'Race',
+            label: 'Breed',
         },
         {
             id: 'color',
@@ -636,7 +636,7 @@ export default function ShelterPage() {
                                             <InputLabel color="secondary" id="select-gender">gender</InputLabel>
                                             <Select
                                                 color="secondary"
-                                                sx={{width: '21ch'}}
+                                                sx={{width: '24ch'}}
                                                 labelId="select-gender"
                                                 id="gender"
                                                 value={gender}
@@ -659,8 +659,8 @@ export default function ShelterPage() {
                                             onChange={handleChange('age')}
                                         />
                                         <TextField
-                                            label="race"
-                                            id="race"
+                                            label="breed"
+                                            id="breed"
                                             sx={{m: 1, width: '50ch'}}
                                             color="secondary"
                                             size="small"
@@ -729,7 +729,7 @@ export default function ShelterPage() {
                                             <InputLabel color="secondary" id="select-type">type</InputLabel>
                                             <Select
                                                 color="secondary"
-                                                sx={{width: '21ch'}}
+                                                sx={{width: '24ch'}}
                                                 labelId="select-type"
                                                 id="type"
                                                 value={values.type}
