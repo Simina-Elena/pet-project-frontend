@@ -14,12 +14,11 @@ import Divider from '@mui/material/Divider';
 import {Box, Button, FormControl, InputLabel, MenuItem, Modal, Select, TextField, Typography} from "@mui/material";
 import axios from "axios";
 import AuthService from "../services/auth.service";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DatePicker from "@mui/lab/DatePicker";
 import authHeader from "../services/auth-header";
-import {useHistory} from "react-router-dom";
 import {useAtom} from "jotai";
 import {nameAtom} from "../App";
 

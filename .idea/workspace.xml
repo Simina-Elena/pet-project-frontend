@@ -2,9 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e33f84b6-8e13-471e-8a27-cbe0fbd28448" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/components/Adoptions.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/EnhancedTableHead.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/EnhancedTableToolbar.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/MyPetsTable.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/PetDetails/PetDetails.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/PetDetails/PetDetails.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShelterInfo.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShelterInfo.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/fetchShelter.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/fetchShelter.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/containers/ShelterPage/ShelterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/ShelterPage/ShelterPage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -122,7 +126,11 @@
       <workItem from="1645082136496" duration="8701000" />
       <workItem from="1645096104967" duration="351000" />
       <workItem from="1645098503333" duration="318000" />
-      <workItem from="1645122551972" duration="3847000" />
+      <workItem from="1645122551972" duration="4211000" />
+      <workItem from="1645167539597" duration="2158000" />
+      <workItem from="1645383189881" duration="7000" />
+      <workItem from="1645525611761" duration="9403000" />
+      <workItem from="1645548606399" duration="4744000" />
     </task>
     <servers />
   </component>
