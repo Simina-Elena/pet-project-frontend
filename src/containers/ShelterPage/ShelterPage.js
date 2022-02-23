@@ -1,7 +1,7 @@
 import AuthService from "../../services/auth.service";
 import {useEffect, useState} from "react";
 import axios from "axios";
-import authHeader from "../../services/auth-header";
+import {authHeader} from "pet-project-frontend-sharedcomponents";
 import {
     alpha,
     Box,
@@ -55,47 +55,6 @@ import {EnhancedTableToolbar} from "../../components/EnhancedTableToolbar";
 import MyPetsTable from "../../components/MyPetsTable";
 import capitalize from "@mui/utils/capitalize";
 
-// const Search = styled('div')(({theme}) => ({
-//     position: 'relative',
-//     borderRadius: theme.shape.borderRadius,
-//     backgroundColor: alpha(theme.palette.common.white, 0.15),
-//     '&:hover': {
-//         backgroundColor: alpha(theme.palette.common.white, 0.25),
-//     },
-//     marginLeft: 0,
-//     width: '100%',
-//     [theme.breakpoints.up('sm')]: {
-//         marginLeft: theme.spacing(1),
-//         width: 'auto',
-//     },
-// }));
-//
-// const SearchIconWrapper = styled('div')(({theme}) => ({
-//     padding: theme.spacing(0, 2),
-//     height: '100%',
-//     position: 'absolute',
-//     pointerEvents: 'none',
-//     display: 'flex',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-// }));
-//
-// const StyledInputBase = styled(InputBase)(({theme}) => ({
-//     color: 'inherit',
-//     '& .MuiInputBase-input': {
-//         padding: theme.spacing(1, 1, 1, 0),
-//         // vertical padding + font size from searchIcon
-//         paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-//         transition: theme.transitions.create('width'),
-//         width: '100%',
-//         [theme.breakpoints.up('sm')]: {
-//             width: '12ch',
-//             '&:focus': {
-//                 width: '20ch',
-//             },
-//         },
-//     },
-// }));
 
 export default function ShelterPage() {
     const [user, setUser] = useState({})
@@ -145,32 +104,22 @@ export default function ShelterPage() {
     const headCells = [
         {
             id: 'name',
-            numeric: true,
-            disablePadding: false,
             label: 'Name',
         },
         {
             id: 'gender',
-            numeric: true,
-            disablePadding: false,
             label: 'Gender',
         },
         {
             id: 'age',
-            numeric: true,
-            disablePadding: false,
             label: 'Age',
         },
         {
             id: 'race',
-            numeric: true,
-            disablePadding: false,
             label: 'Breed',
         },
         {
             id: 'color',
-            numeric: true,
-            disablePadding: false,
             label: 'Color',
         },
     ];

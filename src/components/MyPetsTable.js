@@ -166,15 +166,15 @@ export default function MyPetsTable(props) {
 
                                                 />
                                             </TableCell>
-                                            <TableCell align="right"><Link
+                                            <TableCell sx={{paddingLeft: '40px'}}><Link
                                                 to={{
                                                     pathname: "/pet-details",
                                                     state: pet.id
                                                 }}>{capitalize(pet.name)}</Link></TableCell>
-                                            <TableCell align="right">{pet.gender}</TableCell>
-                                            <TableCell align="right">{pet.age}</TableCell>
-                                            <TableCell align="right">{pet.race}</TableCell>
-                                            <TableCell align="right">{pet.color}</TableCell>
+                                            <TableCell sx={{paddingLeft: '40px'}}>{pet.gender}</TableCell>
+                                            <TableCell sx={{paddingLeft: '40px'}}>{pet.age}</TableCell>
+                                            <TableCell sx={{paddingLeft: '40px'}}>{pet.race}</TableCell>
+                                            <TableCell sx={{paddingLeft: '40px'}}>{pet.color}</TableCell>
                                         </TableRow>
                                     );
                                 }) : stableSort(props.filtered, getComparator(order, orderBy))
@@ -203,15 +203,15 @@ export default function MyPetsTable(props) {
 
                                                 />
                                             </TableCell>
-                                            <TableCell align="right"><Link
+                                            <TableCell sx={{paddingLeft: '40px'}}><Link
                                                 to={{
                                                     pathname: "/pet-details",
                                                     state: pet.id
                                                 }}>{capitalize(pet.name)}</Link></TableCell>
-                                            <TableCell align="right">{pet.gender}</TableCell>
-                                            <TableCell align="right">{pet.age}</TableCell>
-                                            <TableCell align="right">{pet.race}</TableCell>
-                                            <TableCell align="right">{pet.color}</TableCell>
+                                            <TableCell sx={{paddingLeft: '40px'}}>{pet.gender}</TableCell>
+                                            <TableCell sx={{paddingLeft: '40px'}}>{pet.age}</TableCell>
+                                            <TableCell sx={{paddingLeft: '60px'}}>{pet.race}</TableCell>
+                                            <TableCell sx={{paddingLeft: '60px'}}>{pet.color}</TableCell>
                                         </TableRow>
                                     );
                                 })}

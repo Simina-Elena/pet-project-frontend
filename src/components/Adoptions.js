@@ -1,7 +1,6 @@
 import axios from "axios";
 import {authHeader, AuthService} from "pet-project-frontend-sharedcomponents";
 import {useEffect, useState} from "react";
-import MyPetsTable from "./MyPetsTable";
 import MyAdoptionsTable from "./MyAdoptionsTable";
 
 export default function Adoptions() {
@@ -12,20 +11,14 @@ export default function Adoptions() {
     const headCells = [
         {
             id: 'status',
-            numeric: true,
-            disablePadding: false,
             label: 'Status'
         },
         {
             id: 'pet name',
-            numeric: true,
-            disablePadding: false,
             label: 'Pet name'
         },
         {
             id: 'action',
-            numeric: true,
-            disablePadding: false,
             label: 'Action'
         }
     ]
@@ -36,7 +29,7 @@ export default function Adoptions() {
         const res = await data.data
         console.log(res)
         setAdoptions(res)
-
+        setLoading(false)
     }
 
     const capitalize = (petName) => {
@@ -50,6 +43,16 @@ export default function Adoptions() {
             setFilteredAdoptions(adoptions.filter(pet => capitalize(pet.name).includes(e.target.value)))
     }
 
+    const handleAccept = async (id) => {
+        await axios.patch(`http://localhost:8080/api/adoptions/accept-adoption?adoptionId=${id}`, {}, {headers: authHeader()})
+        getAdoptions()
+    }
+
+    const handleDecline = async (id) => {
+        await axios.patch(`http://localhost:8080/api/adoptions/decline-adoption?adoptionId=${id}`, {}, {headers: authHeader()})
+        getAdoptions()
+    }
+
     const handleDeleteAdoption = () => {
 
     }
@@ -58,17 +61,22 @@ export default function Adoptions() {
         getAdoptions()
     }, [])
 
-    return (
-        <div>
-            <MyAdoptionsTable
-                entity={adoptions}
-                handleSearch={handleSearchAdoption}
-                handleDelete={handleDeleteAdoption}
-                setFiltered={setFilteredAdoptions}
-                filtered={filteredAdoptions}
-                delete={handleDeleteAdoption}
-                headCells={headCells}
-            />
-        </div>
-    )
+    if (loading)
+        return (<div>loading...</div>)
+    else
+        return (
+            <div>
+                <MyAdoptionsTable
+                    entity={adoptions}
+                    handleSearch={handleSearchAdoption}
+                    handleDelete={handleDeleteAdoption}
+                    setFiltered={setFilteredAdoptions}
+                    filtered={filteredAdoptions}
+                    delete={handleDeleteAdoption}
+                    headCells={headCells}
+                    handleAccept={handleAccept}
+                    handleDecline={handleDecline}
+                />
+            </div>
+        )
 }

@@ -7,7 +7,7 @@ import {
     Table,
     TableBody,
     TableCell,
-    TableContainer,
+    TableContainer, TablePagination,
     TableRow
 } from "@mui/material";
 import * as React from "react";
@@ -16,6 +16,7 @@ import {EnhancedTableToolbar} from "./EnhancedTableToolbar";
 import EnhancedTableHead from "./EnhancedTableHead";
 import {Link} from "react-router-dom";
 import capitalize from "@mui/utils/capitalize";
+import axios from "axios";
 
 export default function MyAdoptionsTable(props) {
     const [order, setOrder] = useState('asc');
@@ -114,6 +115,7 @@ export default function MyAdoptionsTable(props) {
         setDense(event.target.checked);
     };
 
+
     return (
         <div>
             <Paper sx={{width: '100%', mb: 2}}>
@@ -166,13 +168,13 @@ export default function MyAdoptionsTable(props) {
 
                                                 />
                                             </TableCell>
-                                            <TableCell align="right">{adoption.adoptionStatus}</TableCell>
-                                            <TableCell align="right"><Link
+                                            <TableCell sx={{paddingLeft: '85px'}}>{adoption.adoptionStatus}</TableCell>
+                                            <TableCell sx={{paddingLeft: '80px'}}><Link
                                                 to={{
                                                     pathname: "/pet-details",
                                                     state: adoption.pet.id
                                                 }}>{capitalize(adoption.pet.name)}</Link></TableCell>
-                                            <TableCell align="right"><Stack direction='row'><Button>accept</Button><Button>decline</Button></Stack></TableCell>
+                                            <TableCell><Stack justifyContent='center' direction='row'><Button color='secondary' disabled={adoption.adoptionStatus === 'ACCEPTED'} onClick={() => props.handleAccept(adoption.id)}>accept</Button><Button color='secondary' disabled={adoption.adoptionStatus === 'DECLINED'} onClick={() => props.handleDecline(adoption.id)}>decline</Button></Stack></TableCell>
 
                                         </TableRow>
                                     );
@@ -202,13 +204,13 @@ export default function MyAdoptionsTable(props) {
 
                                                 />
                                             </TableCell>
-                                            <TableCell align="right">{adoption.adoptionStatus}</TableCell>
-                                            <TableCell align="right"><Link
+                                            <TableCell sx={{paddingLeft: '85px'}}>{adoption.adoptionStatus}</TableCell>
+                                            <TableCell sx={{paddingLeft: '80px'}}><Link
                                                 to={{
                                                     pathname: "/pet-details",
                                                     state: adoption.pet.id
                                                 }}>{capitalize(adoption.pet.name)}</Link></TableCell>
-                                            <TableCell align="right"><Stack direction='row'><Button>accept</Button><Button>decline</Button></Stack></TableCell>
+                                            <TableCell align="right"><Stack direction='row'><Button color='secondary' disabled={adoption.adoptionStatus === 'ACCEPTED'}>accept</Button><Button color='secondary' disabled={adoption.adoptionStatus === 'DECLINED'}>decline</Button></Stack></TableCell>
 
                                         </TableRow>
                                     );
@@ -226,6 +228,15 @@ export default function MyAdoptionsTable(props) {
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={props.entity.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
             </Paper>
             <FormControlLabel
                 control={<Switch checked={dense} onChange={handleChangeDense}/>}
