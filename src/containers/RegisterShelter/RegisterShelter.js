@@ -3,7 +3,7 @@ import {useHistory} from "react-router-dom";
 import {
     Box,
     Button,
-    FormControl,
+    FormControl, FormHelperText,
     IconButton,
     InputAdornment,
     InputLabel,
@@ -13,6 +13,32 @@ import {
 import {AuthService} from "pet-project-frontend-sharedcomponents";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import * as React from "react";
+import * as yup from 'yup'
+import {useFormik} from "formik";
+
+const validationSchema = yup.object({
+    username: yup
+        .string('Enter your username')
+        .max(25, 'Username must not be longer that 25 chars')
+        .required('Username is required'),
+    password: yup
+        .string('Enter your password')
+        .min(6, 'Password should be of minimum 6 characters length')
+        .required('Password is required'),
+    confirmPassword: yup
+        .string("Enter your password")
+        .required("Confirm your password")
+        .oneOf([yup.ref("password")], "Password does not match"),
+    email: yup
+        .string('Enter your email')
+        .email('Enter a valid email')
+        .required('Email is required'),
+    phoneNumber: yup
+        .string('Enter your phone number')
+        .matches(/^(\(\d{3}\)|\d{3})-?\d{3}-?\d{4}$/, 'Please enter valid phone number')
+        .required('Phone number is required')
+
+});
 
 function RegisterShelter(props) {
     const [values, setValues] = useState({
@@ -25,30 +51,26 @@ function RegisterShelter(props) {
         showConfirmPassword: false,
     });
     let history = useHistory()
-    const onFinishRegister = async (e) => {
-        e.preventDefault()
-        console.log(values)
-        console.log(props)
-        let username = values.username;
-        let password = values.confirmPassword;
-        let email = values.email;
-        let phoneNumber = values.phoneNumber
-        let user = {username, password, email, phoneNumber};
-        if(props.location.state === 'shelter') {
+
+    const formik = useFormik({
+        initialValues: {
+            username: values.username,
+            password: values.password,
+            email: values.email,
+            phoneNumber: values.phoneNumber,
+            confirmPassword: values.confirmPassword
+        },
+        validationSchema: validationSchema,
+        onSubmit: async (values) => {
+            let username = values.username;
+            let password = values.confirmPassword;
+            let email = values.email;
+            let phoneNumber = values.phoneNumber
+            let user = {username, password, email, phoneNumber};
             await AuthService.registerShelter(user)
             history.push("/login")
-        } else if(props.location.state === 'visitor') {
-            await AuthService.registerVisitor(user)
-            history.push('/login')
-            console.log("la visitor")
-        }
-    };
-
-
-    const handleChange = (prop) => (event) => {
-        setValues({...values, [prop]: event.target.value});
-        console.log(values)
-    };
+        },
+    });
 
     const handleClickShowPassword = () => {
         setValues({
@@ -58,7 +80,6 @@ function RegisterShelter(props) {
         });
         console.log(values)
     };
-
 
     const handleClickShowConfirmPassword = () => {
         setValues({
@@ -89,7 +110,7 @@ function RegisterShelter(props) {
                             <h1 className="mb-4 text-2xl font-bold text-center text-gray-700">
                                 Register
                             </h1>
-                            <form onSubmit={onFinishRegister}>
+                            <form onSubmit={formik.handleSubmit}>
                                 <Box sx={{display: 'flex', flexWrap: 'wrap'}}>
                                     <TextField
                                         label="Username"
@@ -97,9 +118,10 @@ function RegisterShelter(props) {
                                         sx={{m: 1, width: '50ch'}}
                                         color="secondary"
                                         size="small"
-                                        value={values.username}
-                                        onChange={handleChange('username')}
-
+                                        value={formik.values.username}
+                                        onChange={formik.handleChange}
+                                        error={formik.touched.username && Boolean(formik.errors.username)}
+                                        helperText={formik.touched.username && formik.errors.username}
                                     />
                                     <TextField
                                         label="Email"
@@ -107,9 +129,10 @@ function RegisterShelter(props) {
                                         sx={{m: 1, width: '50ch'}}
                                         color="secondary"
                                         size="small"
-                                        value={values.email}
-                                        onChange={handleChange('email')}
-
+                                        value={formik.values.email}
+                                        onChange={formik.handleChange}
+                                        error={formik.touched.email && Boolean(formik.errors.email)}
+                                        helperText={formik.touched.email && formik.errors.email}
                                     />
                                     <FormControl size="small" sx={{m: 1, width: '50ch'}} variant="outlined"
                                                  color="secondary">
@@ -117,8 +140,9 @@ function RegisterShelter(props) {
                                         <OutlinedInput
                                             id="outlined-adornment-password"
                                             type={values.showPassword ? 'text' : 'password'}
-                                            value={values.password}
-                                            onChange={handleChange('password')}
+                                            value={formik.values.password}
+                                            onChange={formik.handleChange('password')}
+                                            error={formik.touched.password && Boolean(formik.errors.password)}
                                             endAdornment={
                                                 <InputAdornment position="end">
                                                     <IconButton
@@ -133,6 +157,7 @@ function RegisterShelter(props) {
                                             }
                                             label="Password"
                                         />
+                                        <FormHelperText sx={{color: '#d32f2f'}}>{formik.touched.password && formik.errors.password}</FormHelperText>
                                     </FormControl>
                                     <FormControl size="small" sx={{m: 1, width: '50ch'}} variant="outlined"
                                                  color="secondary">
@@ -140,8 +165,9 @@ function RegisterShelter(props) {
                                         <OutlinedInput
                                             id="outlined-adornment-confirmPassword"
                                             type={values.showConfirmPassword ? 'text' : 'password'}
-                                            value={values.confirmPassword}
-                                            onChange={handleChange('confirmPassword')}
+                                            value={formik.values.confirmPassword}
+                                            onChange={formik.handleChange('confirmPassword')}
+                                            error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
                                             endAdornment={
                                                 <InputAdornment position="end">
                                                     <IconButton
@@ -156,6 +182,7 @@ function RegisterShelter(props) {
                                             }
                                             label="Confirm password"
                                         />
+                                        <FormHelperText sx={{color: '#d32f2f'}}>{formik.touched.confirmPassword && formik.errors.confirmPassword}</FormHelperText>
                                     </FormControl>
                                     <TextField
                                         label="Phone number"
@@ -163,9 +190,10 @@ function RegisterShelter(props) {
                                         sx={{m: 1, width: '50ch'}}
                                         color="secondary"
                                         size="small"
-                                        value={values.phoneNumber}
-                                        onChange={handleChange('phoneNumber')}
-
+                                        value={formik.values.phoneNumber}
+                                        onChange={formik.handleChange}
+                                        error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
+                                        helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
                                     />
 
                                     <Button sx={{margin: 'auto', mt: 2, width: 'min-content'}}

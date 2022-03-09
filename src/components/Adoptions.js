@@ -3,7 +3,7 @@ import {authHeader, AuthService} from "pet-project-frontend-sharedcomponents";
 import {useEffect, useState} from "react";
 import MyAdoptionsTable from "./MyAdoptionsTable";
 
-export default function Adoptions() {
+export default function Adoptions(props) {
     const [loading, setLoading] = useState(true)
     const [adoptions, setAdoptions] = useState([])
     const [filteredAdoptions, setFilteredAdoptions] = useState([])
@@ -24,11 +24,12 @@ export default function Adoptions() {
     ]
 
     const getAdoptions = async () => {
-        const data = await axios.get(`http://localhost:8080/api/adoptions?shelterId=${AuthService.getCurrentUser().id}`,
+        const data = await axios.get(`http://localhost:8080/api/adoptions/byShelter?shelterId=${AuthService.getCurrentUser().id}`,
             {headers: authHeader()})
         const res = await data.data
         console.log(res)
         setAdoptions(res)
+        props.updatePets()
         setLoading(false)
     }
 

@@ -3,11 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="e33f84b6-8e13-471e-8a27-cbe0fbd28448" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Adoptions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Adoptions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/EnhancedTableHead.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/EnhancedTableHead.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/MyAdoptionsTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MyAdoptionsTable.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/MyPetsTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MyPetsTable.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/containers/RegisterShelter/RegisterShelter.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/RegisterShelter/RegisterShelter.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/containers/ShelterPage/ShelterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/ShelterPage/ShelterPage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -46,7 +46,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../pet-project-frontend-for-visitor" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2021.2.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
@@ -130,7 +130,18 @@
       <workItem from="1645383189881" duration="7000" />
       <workItem from="1645525611761" duration="9403000" />
       <workItem from="1645548606399" duration="5012000" />
-      <workItem from="1645601363695" duration="12570000" />
+      <workItem from="1645601363695" duration="12723000" />
+      <workItem from="1645709771934" duration="4028000" />
+      <workItem from="1645810908091" duration="2233000" />
+      <workItem from="1646387273678" duration="1739000" />
+      <workItem from="1646401707103" duration="2924000" />
+      <workItem from="1646506426152" duration="1399000" />
+      <workItem from="1646564500457" duration="2113000" />
+      <workItem from="1646573280948" duration="3849000" />
+      <workItem from="1646647812210" duration="4090000" />
+      <workItem from="1646675577088" duration="1399000" />
+      <workItem from="1646760118551" duration="2845000" />
+      <workItem from="1646846987772" duration="1679000" />
     </task>
     <servers />
   </component>

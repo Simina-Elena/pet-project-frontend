@@ -3,55 +3,34 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import {authHeader} from "pet-project-frontend-sharedcomponents";
 import {
-    alpha,
     Box,
     Button,
-    Checkbox,
     Container,
     FormControl,
-    FormControlLabel,
     IconButton,
     ImageList,
     ImageListItem, ImageListItemBar,
-    InputBase,
     InputLabel,
     MenuItem,
     Modal,
     Paper,
     Select,
     Stack,
-    Switch,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TablePagination,
-    TableRow,
-    TableSortLabel,
     TextField,
-    Toolbar,
-    Tooltip,
     Typography
 } from "@mui/material";
-import PropTypes from "prop-types";
-import {visuallyHidden} from '@mui/utils';
 import DeleteIcon from '@mui/icons-material/Delete';
 import * as React from "react";
-import {Link, useHistory} from "react-router-dom";
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import {Input, PhotoCamera} from "@mui/icons-material";
 import {styled} from '@mui/material/styles';
-import SearchIcon from '@mui/icons-material/Search';
 import ShelterInfo from "../../components/ShelterInfo";
 import {useAtom} from "jotai";
 import {nameAtom} from "../../App";
 import Adoptions from "../../components/Adoptions";
-import EnhancedTableHead from "../../components/EnhancedTableHead";
-import {EnhancedTableToolbar} from "../../components/EnhancedTableToolbar";
 import MyPetsTable from "../../components/MyPetsTable";
 import capitalize from "@mui/utils/capitalize";
 
@@ -179,7 +158,6 @@ export default function ShelterPage() {
         getImages()
     }, [usernameAtom])
 
-
     const handleOpen = () => setOpenPetModal(true);
     const handleOpenActivityModal = () => setOpenActivityModal(true);
 
@@ -296,6 +274,9 @@ export default function ShelterPage() {
         await getImages()
     }
 
+    const updatePets = async () => {
+        await getPets()
+    }
 
     if (values.loading)
         return (<div>loading...</div>)
@@ -536,7 +517,7 @@ export default function ShelterPage() {
                                      headCells={headCells}
                         />
 
-                        <Adoptions/>
+                        <Adoptions updatePets={updatePets}/>
 
                     </Box>
                 </Container>
