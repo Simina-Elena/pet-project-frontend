@@ -148,6 +148,7 @@ export default function PetDetails(props) {
     };
 
     const handleEditPet = async (e) => {
+        // TODO: check why adoption status changes after edit
         e.preventDefault()
         console.log(values)
         const name = values.name
@@ -219,7 +220,7 @@ export default function PetDetails(props) {
                                     <PhotoCamera color="secondary"/>
                                 </IconButton>
                                 <Typography>{file.name}</Typography>
-                                <Button sx={{fontFamily: 'Lora', fontWeight: 600}} color='secondary'
+                                <Button sx={{textTransform:'none', fontSize:'1rem', fontFamily: 'Lora', fontWeight: 600}} color='secondary'
                                         onClick={handleImage}>Upload picture</Button>
                             </Stack>
                         </label>
@@ -256,7 +257,7 @@ export default function PetDetails(props) {
                                 </Typography>
                                 <Typography variant="h6" color="text.secondary">
                                     <img className="margin-flex" width='30px' src="/assets/adopted.svg"
-                                    /><span className="mr-10">Adopted: not yet</span>
+                                    /><span className="mr-10">Adopted: {pet.adopted === true ? "yes" : "not yet"}</span>
                                 </Typography>
                             </ThemeProvider>
                             <div className="float-right">
@@ -345,7 +346,7 @@ export default function PetDetails(props) {
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                                     <DatePicker
                                         views={['day']}
-                                        label="Joined date"
+                                        label="joined date"
                                         value={values.date}
                                         onChange={(newValue) => {
                                             setValues({...values, ['date']: newValue});
@@ -354,6 +355,7 @@ export default function PetDetails(props) {
                                      />
                                 </LocalizationProvider>
                                 <Button sx={{
+                                    textTransform:'none',
                                     margin: 'auto', mt: '20px', display: 'table-cell', verticalAlign: 'bottom',
                                     fontFamily: 'Lora', fontWeight: '600'
                                 }}

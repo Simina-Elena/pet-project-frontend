@@ -13,14 +13,15 @@ import ReviewsIcon from '@mui/icons-material/Reviews';
 import Divider from '@mui/material/Divider';
 import {Box, Button, FormControl, InputLabel, MenuItem, Modal, Select, TextField, Typography} from "@mui/material";
 import axios from "axios";
-import AuthService from "../services/auth.service";
+import AuthService from "../../services/auth.service";
 import {useState} from "react";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DatePicker from "@mui/lab/DatePicker";
-import authHeader from "../services/auth-header";
+import authHeader from "../../services/auth-header";
 import {useAtom} from "jotai";
-import {nameAtom} from "../App";
+import {nameAtom} from "../../App";
+import moment from "moment";
 
 export default function ShelterInfo(props) {
     const [user, setUser] = useState(props.user)
@@ -40,16 +41,18 @@ export default function ShelterInfo(props) {
     console.log(props)
     const handleUpdateShelterInfo = async (e) => {
         e.preventDefault()
-        let username = values.username
-        let city = values.city
-        let country = values.country
-        let number = values.number
-        let street = values.street
-        let zip = values.zip
-        let address = {city: city, country: country, number: number, street: street, zip: zip}
-        let email = values.email
-        let phoneNumber = values.phoneNumber
-        let date = new Date(values.date.getFullYear() + '-' + (values.date.getMonth() + 1) + '-' + (values.date.getDate() + 1)).toISOString().substring(0, 10)
+        console.log(values)
+        const username = values.username
+        const city = values.city
+        const country = values.country
+        const number = values.number
+        const street = values.street
+        const zip = values.zip
+        const address = {city: city, country: country, number: number, street: street, zip: zip}
+        const email = values.email
+        const phoneNumber = values.phoneNumber
+        const date = moment(values.date).format('YYYY-MM-DD')
+        console.log(date)
         const data = await axios.patch(`http://localhost:8080/api/shelter/profile-update/${AuthService.getCurrentUser().username}`,
             {
                 username,
@@ -203,7 +206,8 @@ export default function ShelterInfo(props) {
                                 />
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                                     <DatePicker
-                                        label="Joined date"
+                                        views={['day']}
+                                        label="joined date"
                                         value={values.date}
                                         onChange={(newValue) => {
                                             setValues({...values, ['date']: newValue});
@@ -212,6 +216,7 @@ export default function ShelterInfo(props) {
                                     />
                                 </LocalizationProvider>
                                 <Button sx={{
+                                    textTransform: 'none',
                                     margin: 'auto', mt: '20px', display: 'table-cell', verticalAlign: 'bottom',
                                     fontFamily: 'Lora', fontWeight: '600'
                                 }}

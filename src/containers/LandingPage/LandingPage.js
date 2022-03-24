@@ -15,7 +15,8 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        fontFamily: 'Nunito'
+        fontFamily: 'Lora',
+        fontWeight: '500'
 
     },
     appbar: {
@@ -70,11 +71,11 @@ const LandingPage = () => {
                         <Stack direction="row" spacing={2}>
                             <Link to={{pathname: "/register/shelter"}}>
                                 <Button color='secondary' variant="contained"
-                                        sx={{fontFamily: 'Lora', fontWeight: '600'}}>Register as shelter</Button>
+                                        sx={{textTransform: 'none', fontFamily: 'Lora', fontWeight: '600', fontSize: '1rem'}}>Register as shelter</Button>
                             </Link>
                             <a href="http://localhost:3001/register/visitor">
                                 <Button color="secondary" variant="contained"
-                                        sx={{fontFamily: 'Lora', fontWeight: '600'}}>Register as visitor</Button>
+                                        sx={{textTransform: 'none', fontFamily: 'Lora', fontWeight: '600', fontSize: '1rem'}}>Register as visitor</Button>
                             </a>
                         </Stack>
                         {/*<Scroll to="action" smooth={true}>*/}

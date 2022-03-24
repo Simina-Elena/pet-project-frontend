@@ -1,7 +1,7 @@
 import axios from "axios";
 import {authHeader, AuthService} from "pet-project-frontend-sharedcomponents";
 import {useEffect, useState} from "react";
-import MyAdoptionsTable from "./MyAdoptionsTable";
+import MyAdoptionsTable from "../MyAdoptionsTable/MyAdoptionsTable";
 
 export default function Adoptions(props) {
     const [loading, setLoading] = useState(true)

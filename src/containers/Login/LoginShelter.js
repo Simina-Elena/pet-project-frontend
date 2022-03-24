@@ -8,7 +8,7 @@ import {
     InputAdornment,
     InputLabel,
     OutlinedInput,
-    TextField
+    TextField, Typography
 } from "@mui/material";
 import AuthService from "../../services/auth.service";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
@@ -70,9 +70,10 @@ function Login() {
                     </div>
                     <div className="flex items-center justify-center object-center p-6 sm:p-12 md:w-1/2">
                         <div className="w-full ">
-                            <h1 className="mb-4 text-2xl font-bold text-center text-gray-700">
+                            <Typography align='center' variant="h6" component="h2" mb='10px'
+                                        fontFamily='Lora' fontWeight='600'>
                                 Login
-                            </h1>
+                            </Typography>
                             <form onSubmit={onFinishRegister}>
                                 <Box sx={{display: 'flex', flexWrap: 'wrap'}}>
                                     <TextField
@@ -109,7 +110,7 @@ function Login() {
                                         />
                                     </FormControl>
 
-                                    <Button sx={{margin: 'auto', mt: 2, width: 'min-content'}}
+                                    <Button sx={{textTransform:'none', fontFamily: 'Lora', fontWeight: '600', margin: 'auto', mt: 2, width: 'min-content'}}
                                             type="submit"
                                             color="secondary" variant="contained"
                                     >

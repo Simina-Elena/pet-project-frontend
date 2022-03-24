@@ -79,7 +79,7 @@ export const EnhancedTableToolbar = (props) => {
                     id="tableTitle"
                     component="div"
                 >
-                    <Button sx={{color: 'black', fontFamily: 'Lora', fontWeight: 600, fontSize: '1rem'}}
+                    <Button sx={{color: 'black', textTransform:'none', fontSize:'1.2rem', fontFamily: 'Lora', fontWeight: 600}}
                             onClick={() => props.filteredEntity([])}>{props.tableName}</Button>
                 </Typography>
             )}

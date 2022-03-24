@@ -12,8 +12,8 @@ import {
 } from "@mui/material";
 import * as React from "react";
 import {useState} from "react";
-import {EnhancedTableToolbar} from "./EnhancedTableToolbar";
-import EnhancedTableHead from "./EnhancedTableHead";
+import {EnhancedTableToolbar} from "../EnhancedTableToolbar/EnhancedTableToolbar";
+import EnhancedTableHead from "../EnhancedTableHead/EnhancedTableHead";
 import {Link} from "react-router-dom";
 import capitalize from "@mui/utils/capitalize";
 import axios from "axios";

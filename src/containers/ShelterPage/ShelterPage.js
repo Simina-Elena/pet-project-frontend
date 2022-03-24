@@ -27,15 +27,22 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import {Input, PhotoCamera} from "@mui/icons-material";
 import {styled} from '@mui/material/styles';
-import ShelterInfo from "../../components/ShelterInfo";
+import ShelterInfo from "../../components/ShelterInfo/ShelterInfo";
 import {useAtom} from "jotai";
 import {nameAtom} from "../../App";
-import Adoptions from "../../components/Adoptions";
-import MyPetsTable from "../../components/MyPetsTable";
+import Adoptions from "../../components/Adoptions/Adoptions";
+import MyPetsTable from "../../components/MyPetsTable/MyPetsTable";
 import capitalize from "@mui/utils/capitalize";
+import {makeStyles} from "@mui/styles";
 
+const useStyle = makeStyles((theme) => ({
+    root: {
+            textTransform: 'none'
+    }
+}))
 
 export default function ShelterPage() {
+    const classes = useStyle()
     const [user, setUser] = useState({})
     const [usernameAtom] = useAtom(nameAtom)
     const [pets, setPets] = useState([])
@@ -115,7 +122,7 @@ export default function ShelterPage() {
 
     const getPets = async () => {
         await getShelter()
-        const data = await axios.get(`http://localhost:8080/api/pet/list/${AuthService.getCurrentUser().id}`,
+        const data = await axios.get(`http://localhost:8080/api/pet/list-all/${AuthService.getCurrentUser().id}`,
             {headers: authHeader()})
         const res = await data.data
         setPets(res)
@@ -210,7 +217,7 @@ export default function ShelterPage() {
     const handleSearchPet = (e) => {
         console.log(e.target.value)
         if (e.key === 'Enter')
-            setFilteredPets(pets.filter(pet => capitalize(pet.name).includes(e.target.value)))
+            setFilteredPets(pets.filter(pet => pet.name.includes(e.target.value)))
     }
 
 
@@ -245,6 +252,7 @@ export default function ShelterPage() {
     };
 
     const handleDeleteActivity = async () => {
+        //TODO: popup for delete
         await axios.delete(`http://localhost:8080/api/activities?activityId=${valueTabs}`)
         await getActivities()
     }
@@ -326,13 +334,13 @@ export default function ShelterPage() {
                                     <PhotoCamera color="secondary"/>
                                 </IconButton>
                                 <Typography>{file.name}</Typography>
-                                <Button sx={{fontFamily: 'Lora', fontWeight: 600}} color='secondary'
+                                <Button sx={{textTransform:'none', fontSize: '1rem', fontFamily: 'Lora', fontWeight: 600}} color='secondary'
                                         onClick={handleImage}>Upload
                                     picture</Button></Stack>
                         </label>
 
                         <Stack direction="row" spacing={2} padding='10px'>
-                            <Button color="secondary" variant="contained" sx={{fontFamily: 'Lora', fontWeight: '600'}}
+                            <Button color="secondary" variant="contained" sx={{textTransform: 'none', fontFamily: 'Lora', fontWeight: '600'}}
                                     onClick={handleOpen}>Add pet</Button>
                             {/*AddPet modal start*/}
                             <Modal
@@ -412,6 +420,7 @@ export default function ShelterPage() {
                                             onChange={handleChange('description')}
                                         />
                                         <Button sx={{
+                                            textTransform: 'none',
                                             margin: 'auto', mt: '20px', display: 'table-cell', verticalAlign: 'bottom',
                                             fontFamily: 'Lora', fontWeight: '600'
                                         }}
@@ -425,7 +434,7 @@ export default function ShelterPage() {
                             </Modal>
                             {/*AddPet modal end*/}
                             <Button color="secondary" variant="contained"
-                                    sx={{fontFamily: 'Lora', fontWeight: '600'}} onClick={handleOpenActivityModal}>Add
+                                    sx={{textTransform: 'none', fontFamily: 'Lora', fontWeight: '600'}} onClick={handleOpenActivityModal}>Add
                                 activity</Button>
 
                             {/*Add activity modal start*/}
@@ -468,7 +477,9 @@ export default function ShelterPage() {
                                                 ))}
                                             </Select>
                                         </FormControl>
-                                        <Button sx={{
+                                        <Button
+                                                sx={{
+                                            textTransform: 'none',
                                             margin: 'auto', mt: '20px', display: 'table-cell', verticalAlign: 'bottom',
                                             fontFamily: 'Lora', fontWeight: '600'
                                         }}
@@ -485,7 +496,7 @@ export default function ShelterPage() {
                         {/*Activity tabs*/}
                         <Box sx={{width: '100%', typography: 'body1'}}>
                             <TabContext value={valueTabs}>
-                                <TabList onChange={handleChangeTabs} aria-label="lab API tabs">
+                                <TabList indicatorColor='green' textColor='secondary' onChange={handleChangeTabs} aria-label="lab API tabs">
                                     {activities.map((activity) =>
                                         <Tab key={activity.id} label={activity.activityType} value={activity.id}/>
                                     )}

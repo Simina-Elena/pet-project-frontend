@@ -9,8 +9,8 @@ import {
     TablePagination,
     TableRow
 } from "@mui/material";
-import {EnhancedTableToolbar} from "./EnhancedTableToolbar";
-import EnhancedTableHead from "./EnhancedTableHead";
+import {EnhancedTableToolbar} from "../EnhancedTableToolbar/EnhancedTableToolbar";
+import EnhancedTableHead from "../EnhancedTableHead/EnhancedTableHead";
 import {Link} from "react-router-dom";
 import * as React from "react";
 import {useState} from "react";
