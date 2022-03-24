@@ -107,7 +107,7 @@ function RegisterShelter(props) {
                     <div className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
                         <div className="w-full">
 
-                            <h1 className="mb-4 text-2xl font-bold text-center text-gray-700">
+                            <h1 className="font-content mb-4 text-2xl font-semibold text-center text-gray-700">
                                 Register
                             </h1>
                             <form onSubmit={formik.handleSubmit}>
@@ -196,7 +196,7 @@ function RegisterShelter(props) {
                                         helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
                                     />
 
-                                    <Button sx={{margin: 'auto', mt: 2, width: 'min-content'}}
+                                    <Button sx={{textTransform:'none', fontFamily:'Lora', fontWeight:'600', margin: 'auto', mt: 2, width: 'min-content'}}
                                             type="submit"
                                             color="secondary" variant="contained"
                                     >

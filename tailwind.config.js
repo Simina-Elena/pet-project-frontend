@@ -5,6 +5,9 @@ module.exports = {
     extend: {
       backgroundColor: {
         'background': '#F9F9F9'
+      },
+      fontFamily: {
+        content: ['Lora']
       }
     },
   },

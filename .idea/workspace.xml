@@ -3,20 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="e33f84b6-8e13-471e-8a27-cbe0fbd28448" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Action.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Adoptions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Adoptions/Adoptions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/EnhancedTableHead.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/EnhancedTableHead/EnhancedTableHead.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/EnhancedTableToolbar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/EnhancedTableToolbar/EnhancedTableToolbar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ImageCard.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/MyAdoptionsTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MyAdoptionsTable/MyAdoptionsTable.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/MyPetsTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MyPetsTable/MyPetsTable.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Navbar/Navbar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Navbar/Navbar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShelterInfo.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShelterInfo/ShelterInfo.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/fetchShelter.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/LandingPage/LandingPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/LandingPage/LandingPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/Login/LoginShelter.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Login/LoginShelter.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/PetDetails/PetDetails.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/PetDetails/PetDetails.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/ShelterPage/ShelterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/ShelterPage/ShelterPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/containers/RegisterShelter/RegisterShelter.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/RegisterShelter/RegisterShelter.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -157,7 +144,7 @@
       <workItem from="1646982546139" duration="1424000" />
       <workItem from="1648032561448" duration="1794000" />
       <workItem from="1648037628621" duration="6383000" />
-      <workItem from="1648109236397" duration="7724000" />
+      <workItem from="1648109236397" duration="8052000" />
     </task>
     <servers />
   </component>
