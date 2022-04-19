@@ -7,7 +7,7 @@ import {
     CardContent,
     CardMedia,
     Container,
-    createTheme,
+    createTheme, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
     FormControl,
     IconButton, ImageList,
     ImageListItem,
@@ -33,7 +33,6 @@ import authHeader from "../../services/auth-header";
 import {Input, List, PhotoCamera} from "@mui/icons-material";
 import {styled} from "@mui/material/styles";
 import Carousel from "nuka-carousel";
-import FolderIcon from '@mui/icons-material/Folder';
 import moment from "moment";
 
 
@@ -55,6 +54,7 @@ export default function PetDetails(props) {
     const [open, setOpen] = useState(false);
     const [file, setFile] = useState([]);
     const [photos, setPhotos] = useState([]);
+    const [openPictureDialog, setOpenPictureDialog] = useState(false);
     const [values, setValues] = useState({
         name: '',
         age: '',
@@ -193,7 +193,16 @@ export default function PetDetails(props) {
         console.log(item)
         await axios.delete(`http://localhost:8080/file/delete-for-pet/${item}`)
         await getImages()
+        handleClosePictureDialog()
     }
+
+    const handleOpenPictureDialog = () => {
+        setOpenPictureDialog(true);
+    };
+
+    const handleClosePictureDialog = () => {
+        setOpenPictureDialog(false);
+    };
 
     return (
         <div>
@@ -204,24 +213,48 @@ export default function PetDetails(props) {
                             {photos.map((item) => (
                                 <div style={{position: 'relative'}}>
                                     <DeleteIcon style={{position: 'absolute', top: '4px', right: '5px', color: 'red'}}
-                                                onClick={() => handleDeletePicture(item.name)}/>
+                                                onClick={handleOpenPictureDialog}/>
                                     <img src={'https://petprojectpetsimagesstorage.s3.amazonaws.com/' + item.name}
                                          alt={item.name}
                                          loading="lazy"/>
+                                    <Dialog
+                                        open={openPictureDialog}
+                                        onClose={handleClosePictureDialog}
+                                        aria-labelledby="alert-dialog-title"
+                                        aria-describedby="alert-dialog-description"
+                                    >
+                                        <DialogTitle id="alert-dialog-title">
+                                            {"Do you want to delete this picture?"}
+                                        </DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText id="alert-dialog-description">
+                                                By deleting it will no longer be accessible to anyone and you can't
+                                                restore it.
+                                            </DialogContentText>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleClosePictureDialog}>No thanks</Button>
+                                            <Button onClick={() => handleDeletePicture(item.name)} autoFocus>
+                                                Yes
+                                            </Button>
+                                        </DialogActions>
+                                    </Dialog>
                                 </div>
                             ))}
-                        </Carousel>) : (<img src="/assets/nopicture.jpg"  alt="no picture"/>)}
+                        </Carousel>) : (<img src="/assets/nopicture.jpg" alt="no picture"/>)}
 
                         <label htmlFor="icon-button-file">
                             <Stack direction="row" spacing={2}> <Input accept="image/*" id="icon-button-file"
                                                                        type="file"
                                                                        onChange={(e) => setFile(e.target.files[0])}/>
-                                <IconButton color="primary"  component="span">
+                                <IconButton color="primary" component="span">
                                     <PhotoCamera color="secondary"/>
                                 </IconButton>
                                 <Typography>{file.name}</Typography>
-                                <Button sx={{textTransform:'none', fontSize:'1rem', fontFamily: 'Lora', fontWeight: 600}} color='secondary'
-                                        onClick={handleImage}>Upload picture</Button>
+                                <Button
+                                    sx={{textTransform: 'none', fontSize: '1rem', fontFamily: 'Lora', fontWeight: 600}}
+                                    color='secondary'
+                                    onClick={handleImage}>Upload picture</Button>
                             </Stack>
                         </label>
                         <CardContent>
@@ -352,10 +385,10 @@ export default function PetDetails(props) {
                                             setValues({...values, ['date']: newValue});
                                         }}
                                         renderInput={(params) => <TextField {...params} />}
-                                     />
+                                    />
                                 </LocalizationProvider>
                                 <Button sx={{
-                                    textTransform:'none',
+                                    textTransform: 'none',
                                     margin: 'auto', mt: '20px', display: 'table-cell', verticalAlign: 'bottom',
                                     fontFamily: 'Lora', fontWeight: '600'
                                 }}

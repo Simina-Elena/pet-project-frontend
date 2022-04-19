@@ -1,5 +1,6 @@
 import {
-    Checkbox,
+    Button,
+    Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
     FormControlLabel,
     Paper, Switch,
     Table,
@@ -23,6 +24,7 @@ export default function MyPetsTable(props) {
     const [page, setPage] = useState(0);
     const [dense, setDense] = useState(false);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [openPetDialog, setOpenPetDialog] = useState(false);
 
     console.log(props)
 
@@ -75,9 +77,18 @@ export default function MyPetsTable(props) {
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.entity.length) : 0;
 
+    const handleOpenPetDialog = () => {
+        setOpenPetDialog(true);
+    };
+
+    const handleClosePetDialog = () => {
+        setOpenPetDialog(false);
+    };
+
     const handleDelete = () => {
         props.delete(selected)
         setSelected([])
+        handleClosePetDialog()
     }
 
     const handleClick = (event, name) => {
@@ -119,10 +130,31 @@ export default function MyPetsTable(props) {
             <Paper sx={{width: '100%', mb: 2}}>
                 <EnhancedTableToolbar numSelected={selected.length}
                                       searchEntity={props.handleSearch}
-                                      deleteEntity={handleDelete}
+                                      deleteEntity={handleOpenPetDialog}
                                       filteredEntity={props.setFiltered}
                                       tableName='Pets'
                 />
+                <Dialog
+                    open={openPetDialog}
+                    onClose={handleClosePetDialog}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">
+                        {"Do you want to delete this pet?"}
+                    </DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            By deleting it will no longer be accessible to anyone and you can't restore it.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClosePetDialog}>No thanks</Button>
+                        <Button onClick={handleDelete} autoFocus>
+                            Yes
+                        </Button>
+                    </DialogActions>
+                </Dialog>
                 <TableContainer>
                     <Table
                         sx={{minWidth: 750}}

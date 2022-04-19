@@ -5,7 +5,7 @@ import {authHeader} from "pet-project-frontend-sharedcomponents";
 import {
     Box,
     Button,
-    Container,
+    Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
     FormControl,
     IconButton,
     ImageList,
@@ -42,16 +42,17 @@ const useStyle = makeStyles((theme) => ({
 }))
 
 export default function ShelterPage() {
-    const classes = useStyle()
-    const [user, setUser] = useState({})
-    const [usernameAtom] = useAtom(nameAtom)
-    const [pets, setPets] = useState([])
-    const [filteredPets, setFilteredPets] = useState([])
-    const [activities, setActivities] = useState([])
+    const [user, setUser] = useState({});
+    const [usernameAtom] = useAtom(nameAtom);
+    const [pets, setPets] = useState([]);
+    const [filteredPets, setFilteredPets] = useState([]);
+    const [activities, setActivities] = useState([]);
     const [openPetModal, setOpenPetModal] = useState(false);
     const [openActivityModal, setOpenActivityModal] = useState(false);
-    const [file, setFile] = useState("")
-    const [photos, setPhotos] = useState([])
+    const [openActivityDialog, setOpenActivityDialog] = useState(false);
+    const [openPictureDialog, setOpenPictureDialog] = useState(false);
+    const [file, setFile] = useState("");
+    const [photos, setPhotos] = useState([]);
     let [gender, setGender] = useState();
     const [values, setValues] = useState({
         loading: true,
@@ -168,8 +169,16 @@ export default function ShelterPage() {
     const handleOpen = () => setOpenPetModal(true);
     const handleOpenActivityModal = () => setOpenActivityModal(true);
 
+    const handleOpenActivityDialog = () => {
+        setOpenActivityDialog(true);
+    };
+
+    const handleCloseActivityDialog = () => {
+        setOpenActivityDialog(false);
+    };
+
     const handleClose = () => {
-        gender = ''
+        setGender('')
         values.race = ''
         values.age = ''
         values.name = ''
@@ -179,6 +188,8 @@ export default function ShelterPage() {
     };
 
     const handleCloseActivityModal = () => {
+        values.capacity = ''
+        values.type = ''
         setOpenActivityModal(false)
     };
 
@@ -252,9 +263,9 @@ export default function ShelterPage() {
     };
 
     const handleDeleteActivity = async () => {
-        //TODO: popup for delete
         await axios.delete(`http://localhost:8080/api/activities?activityId=${valueTabs}`)
         await getActivities()
+        handleCloseActivityDialog()
     }
 
     const handleDeletePet = async (selected) => {
@@ -280,7 +291,16 @@ export default function ShelterPage() {
         console.log(item)
         await axios.delete(`http://localhost:8080/file/delete-for-shelter/${item}`)
         await getImages()
+        handleClosePictureDialog()
     }
+
+    const handleOpenPictureDialog = () => {
+        setOpenPictureDialog(true);
+    };
+
+    const handleClosePictureDialog = () => {
+        setOpenPictureDialog(false);
+    };
 
     const updatePets = async () => {
         await getPets()
@@ -312,14 +332,36 @@ export default function ShelterPage() {
                                             sx={{color: 'white'}}
                                             aria-label={`star ${item.title}`}
                                         >
-                                            <DeleteIcon onClick={() => handleDeletePicture(item.name)}/>
+                                            <DeleteIcon onClick={handleOpenPictureDialog}/>
                                         </IconButton>
                                     }
                                     actionPosition="left"
                                 />
+                                <Dialog
+                                    open={openPictureDialog}
+                                    onClose={handleClosePictureDialog}
+                                    aria-labelledby="alert-dialog-title"
+                                    aria-describedby="alert-dialog-description"
+                                >
+                                    <DialogTitle id="alert-dialog-title">
+                                        {"Do you want to delete this picture?"}
+                                    </DialogTitle>
+                                    <DialogContent>
+                                        <DialogContentText id="alert-dialog-description">
+                                            By deleting it will no longer be accessible to anyone and you can't restore it.
+                                        </DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handleClosePictureDialog}>No thanks</Button>
+                                        <Button onClick={()=>handleDeletePicture(item.name)} autoFocus>
+                                            Yes
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
                             </ImageListItem>
                         ))}
                     </ImageList>
+
                     <Box sx={{padding: '10px'}}>
                         <Typography variant="h3" align="center"
                                     bgcolor='#F0E6EF' fontFamily='Lora'
@@ -496,7 +538,7 @@ export default function ShelterPage() {
                         {/*Activity tabs*/}
                         <Box sx={{width: '100%', typography: 'body1'}}>
                             <TabContext value={valueTabs}>
-                                <TabList indicatorColor='green' textColor='secondary' onChange={handleChangeTabs} aria-label="lab API tabs">
+                                <TabList indicatorColor='secondary' textColor='secondary' onChange={handleChangeTabs} aria-label="lab API tabs">
                                     {activities.map((activity) =>
                                         <Tab key={activity.id} label={activity.activityType} value={activity.id}/>
                                     )}
@@ -504,7 +546,7 @@ export default function ShelterPage() {
                                 {activities.map((activity) =>
                                     <TabPanel value={activity.id}> Capacity: {activity.capacity} room(s)
                                         <img width='30px' align="right" src="/assets/delete.svg"
-                                             onClick={handleDeleteActivity}/>
+                                             onClick={handleOpenActivityDialog}/>
                                         <img align="right" width="30px" src="/assets/minus.png"
                                              onClick={handleDecreaseCapacity}/>
                                         <img align="right" width="30px" src="/assets/plus.svg"
@@ -514,6 +556,27 @@ export default function ShelterPage() {
 
                             </TabContext>
                         </Box>
+                        <Dialog
+                            open={openActivityDialog}
+                            onClose={handleClose}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title">
+                                {"Do you want to delete this activity?"}
+                            </DialogTitle>
+                            <DialogContent>
+                                <DialogContentText id="alert-dialog-description">
+                                    By deleting it will no longer be accessible to anyone and you can't restore it.
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleCloseActivityDialog}>No thanks</Button>
+                                <Button onClick={handleDeleteActivity} autoFocus>
+                                    Yes
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
 
                         <Paper sx={{mb: 2}}>
                             <ShelterInfo user={user}/>

@@ -3,7 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="e33f84b6-8e13-471e-8a27-cbe0fbd28448" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/RegisterShelter/RegisterShelter.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/RegisterShelter/RegisterShelter.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/MyPetsTable/MyPetsTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MyPetsTable/MyPetsTable.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/containers/PetDetails/PetDetails.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/PetDetails/PetDetails.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/containers/ShelterPage/ShelterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/ShelterPage/ShelterPage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,7 +46,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../pet-project-frontend-for-visitor" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="ts.external.directory.path" value="C:\Users\Asus\AppData\Local\JetBrains\Toolbox\apps\WebStorm\ch-0\213.6777.57\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
@@ -144,7 +146,19 @@
       <workItem from="1646982546139" duration="1424000" />
       <workItem from="1648032561448" duration="1794000" />
       <workItem from="1648037628621" duration="6383000" />
-      <workItem from="1648109236397" duration="8052000" />
+      <workItem from="1648109236397" duration="8436000" />
+      <workItem from="1648147361286" duration="1803000" />
+      <workItem from="1648194607291" duration="4049000" />
+      <workItem from="1648638919303" duration="1327000" />
+      <workItem from="1648760885422" duration="64000" />
+      <workItem from="1648798459086" duration="2057000" />
+      <workItem from="1649322490607" duration="1510000" />
+      <workItem from="1649325315986" duration="47000" />
+      <workItem from="1649404663653" duration="986000" />
+      <workItem from="1649416550986" duration="21000" />
+      <workItem from="1649745072725" duration="834000" />
+      <workItem from="1650354390415" duration="3457000" />
+      <workItem from="1650365256916" duration="2287000" />
     </task>
     <servers />
   </component>
