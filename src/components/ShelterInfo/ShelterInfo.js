@@ -14,7 +14,7 @@ import Divider from '@mui/material/Divider';
 import {Box, Button, FormControl, InputLabel, MenuItem, Modal, Select, TextField, Typography} from "@mui/material";
 import axios from "axios";
 import AuthService from "../../services/auth.service";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DatePicker from "@mui/lab/DatePicker";
@@ -22,10 +22,13 @@ import authHeader from "../../services/auth-header";
 import {useAtom} from "jotai";
 import {nameAtom} from "../../App";
 import moment from "moment";
+import FetchData from "../fetchDataApi";
 
 export default function ShelterInfo(props) {
     const [user, setUser] = useState(props.user)
     const [usernameAtom, setUsernameAtom] = useAtom(nameAtom)
+    const [apiCountries, setApiCountries] = useState([])
+    const [apiCities, setApiCities] = useState([])
     const [values, setValues] = useState({
         open: false,
         username: '',
@@ -39,6 +42,11 @@ export default function ShelterInfo(props) {
         date: new Date()
     });
     console.log(props)
+
+    useEffect(() => {
+        setApiCountries(FetchData.fetchCountries())
+    }, [])
+
     const handleUpdateShelterInfo = async (e) => {
         e.preventDefault()
         console.log(values)
@@ -141,6 +149,24 @@ export default function ShelterInfo(props) {
                                     value={values.username}
                                     onChange={handleChange('username')}
                                 />
+
+                                <FormControl>
+                                    <InputLabel color="secondary" id="select-country">country</InputLabel>
+                                    <Select
+                                        color="secondary"
+                                        sx={{width: '24ch', m: 1}}
+                                        labelId="select-country"
+                                        id="country"
+                                        value={values.country}
+                                        label="country"
+                                        onChange={handleChange('country')}>
+                                        {apiCountries.map((country) => (
+                                            <MenuItem value={country.name}>
+                                                {country.name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
                                 <TextField
                                     label="city"
                                     id="city"
@@ -150,15 +176,23 @@ export default function ShelterInfo(props) {
                                     value={values.city}
                                     onChange={handleChange('city')}
                                 />
-                                <TextField
-                                    label="country"
-                                    id="country"
-                                    sx={{m: 1, width: '50ch'}}
-                                    color="secondary"
-                                    size="small"
-                                    value={values.country}
-                                    onChange={handleChange('country')}
-                                />
+                                {/*<FormControl>*/}
+                                {/*    <InputLabel color="secondary" id="select-city">city</InputLabel>*/}
+                                {/*    <Select*/}
+                                {/*        color="secondary"*/}
+                                {/*        sx={{width: '24ch', m: 1}}*/}
+                                {/*        labelId="select-city"*/}
+                                {/*        id="city"*/}
+                                {/*        value={values.city}*/}
+                                {/*        label="city"*/}
+                                {/*        onChange={handleChange('city')}>*/}
+                                {/*        {apiCities.map((city) => (*/}
+                                {/*            <MenuItem value={city.name}>*/}
+                                {/*                {city.name}*/}
+                                {/*            </MenuItem>*/}
+                                {/*        ))}*/}
+                                {/*    </Select>*/}
+                                {/*</FormControl>*/}
                                 <TextField
                                     label="number"
                                     id="number"

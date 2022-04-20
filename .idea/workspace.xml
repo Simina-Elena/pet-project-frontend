@@ -2,9 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e33f84b6-8e13-471e-8a27-cbe0fbd28448" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/MyPetsTable/MyPetsTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MyPetsTable/MyPetsTable.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/PetDetails/PetDetails.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/PetDetails/PetDetails.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Adoptions/Adoptions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Adoptions/Adoptions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShelterInfo/ShelterInfo.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShelterInfo/ShelterInfo.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/containers/ShelterPage/ShelterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/ShelterPage/ShelterPage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -159,6 +163,7 @@
       <workItem from="1649745072725" duration="834000" />
       <workItem from="1650354390415" duration="3457000" />
       <workItem from="1650365256916" duration="2287000" />
+      <workItem from="1650436700208" duration="12043000" />
     </task>
     <servers />
   </component>

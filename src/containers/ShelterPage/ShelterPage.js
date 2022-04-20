@@ -34,10 +34,11 @@ import Adoptions from "../../components/Adoptions/Adoptions";
 import MyPetsTable from "../../components/MyPetsTable/MyPetsTable";
 import capitalize from "@mui/utils/capitalize";
 import {makeStyles} from "@mui/styles";
+import {useToasts} from "react-toast-notifications";
 
 const useStyle = makeStyles((theme) => ({
     root: {
-            textTransform: 'none'
+        textTransform: 'none'
     }
 }))
 
@@ -53,6 +54,7 @@ export default function ShelterPage() {
     const [openPictureDialog, setOpenPictureDialog] = useState(false);
     const [file, setFile] = useState("");
     const [photos, setPhotos] = useState([]);
+    const {addToast} = useToasts();
     let [gender, setGender] = useState();
     const [values, setValues] = useState({
         loading: true,
@@ -140,16 +142,21 @@ export default function ShelterPage() {
         let formData = new FormData()
         formData.append('file', file)
         formData.append('id', AuthService.getCurrentUser().id)
-        await axios.post(`http://localhost:8080/file/upload`, formData, {
+        const {error} = await axios.post(`http://localhost:8080/file/upload`, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             }
         })
+        if (error) {
+            addToast(error.message, {appearance: 'error', autoDismiss: true});
+        } else {
+            addToast('Image successfully added', {appearance: 'success', autoDismiss: true})
+        }
         setFile('')
         await getImages()
     }
-    //TODO: verify click add image
 
+    //TODO: verify click add image
     const getImages = async () => {
         const data = await axios.get(`http://localhost:8080/api/images/for-shelter/${AuthService.getCurrentUser().id}`, {
             headers: authHeader(),
@@ -211,7 +218,7 @@ export default function ShelterPage() {
         let color = values.color
         let race = values.race
         let description = values.description
-        await axios.post(`http://localhost:8080/api/pet/add/${AuthService.getCurrentUser().id}`,
+        const {error} = await axios.post(`http://localhost:8080/api/pet/add/${AuthService.getCurrentUser().id}`,
             {
                 name,
                 gender,
@@ -220,6 +227,11 @@ export default function ShelterPage() {
                 race,
                 description
             })
+        if (error) {
+            addToast(error.message, {appearance: 'error', autoDismiss: true});
+        } else {
+            addToast('Pet successfully added', {appearance: 'success', autoDismiss: true})
+        }
         handleClose()
         await getPets()
     }
@@ -227,8 +239,11 @@ export default function ShelterPage() {
 
     const handleSearchPet = (e) => {
         console.log(e.target.value)
-        if (e.key === 'Enter')
+        if (e.key === 'Enter') {
             setFilteredPets(pets.filter(pet => pet.name.includes(e.target.value)))
+            if (filteredPets.length === 0)
+                addToast('No such pet found', {appearance: 'info', autoDismiss: true})
+        }
     }
 
 
@@ -251,8 +266,13 @@ export default function ShelterPage() {
         let capacity = values.capacity
         let type = values.type
         let shelterId = AuthService.getCurrentUser().id
-        await axios.post(`http://localhost:8080/api/activities`,
+        const {error} = await axios.post(`http://localhost:8080/api/activities`,
             {capacity, type, shelterId})
+        if (error) {
+            addToast(error.message, {appearance: 'error', autoDismiss: true});
+        } else {
+            addToast('Activity successfully added', {appearance: 'success', autoDismiss: true})
+        }
         handleCloseActivityModal()
         await getActivities()
     }
@@ -263,7 +283,12 @@ export default function ShelterPage() {
     };
 
     const handleDeleteActivity = async () => {
-        await axios.delete(`http://localhost:8080/api/activities?activityId=${valueTabs}`)
+        const {error} = await axios.delete(`http://localhost:8080/api/activities?activityId=${valueTabs}`)
+        if (error) {
+            addToast(error.message, {appearance: 'error', autoDismiss: true});
+        } else {
+            addToast('Activity successfully deleted', {appearance: 'success', autoDismiss: true})
+        }
         await getActivities()
         handleCloseActivityDialog()
     }
@@ -289,7 +314,12 @@ export default function ShelterPage() {
 
     const handleDeletePicture = async (item) => {
         console.log(item)
-        await axios.delete(`http://localhost:8080/file/delete-for-shelter/${item}`)
+        const {error} = await axios.delete(`http://localhost:8080/file/delete-for-shelter/${item}`)
+        if (error) {
+            addToast(error.message, {appearance: 'error', autoDismiss: true});
+        } else {
+            addToast('Image successfully deleted', {appearance: 'success', autoDismiss: true})
+        }
         await getImages()
         handleClosePictureDialog()
     }
@@ -348,12 +378,13 @@ export default function ShelterPage() {
                                     </DialogTitle>
                                     <DialogContent>
                                         <DialogContentText id="alert-dialog-description">
-                                            By deleting it will no longer be accessible to anyone and you can't restore it.
+                                            By deleting it will no longer be accessible to anyone and you can't restore
+                                            it.
                                         </DialogContentText>
                                     </DialogContent>
                                     <DialogActions>
                                         <Button onClick={handleClosePictureDialog}>No thanks</Button>
-                                        <Button onClick={()=>handleDeletePicture(item.name)} autoFocus>
+                                        <Button onClick={() => handleDeletePicture(item.name)} autoFocus>
                                             Yes
                                         </Button>
                                     </DialogActions>
@@ -376,13 +407,16 @@ export default function ShelterPage() {
                                     <PhotoCamera color="secondary"/>
                                 </IconButton>
                                 <Typography>{file.name}</Typography>
-                                <Button sx={{textTransform:'none', fontSize: '1rem', fontFamily: 'Lora', fontWeight: 600}} color='secondary'
-                                        onClick={handleImage}>Upload
+                                <Button
+                                    sx={{textTransform: 'none', fontSize: '1rem', fontFamily: 'Lora', fontWeight: 600}}
+                                    color='secondary'
+                                    onClick={handleImage}>Upload
                                     picture</Button></Stack>
                         </label>
 
                         <Stack direction="row" spacing={2} padding='10px'>
-                            <Button color="secondary" variant="contained" sx={{textTransform: 'none', fontFamily: 'Lora', fontWeight: '600'}}
+                            <Button color="secondary" variant="contained"
+                                    sx={{textTransform: 'none', fontFamily: 'Lora', fontWeight: '600'}}
                                     onClick={handleOpen}>Add pet</Button>
                             {/*AddPet modal start*/}
                             <Modal
@@ -476,7 +510,8 @@ export default function ShelterPage() {
                             </Modal>
                             {/*AddPet modal end*/}
                             <Button color="secondary" variant="contained"
-                                    sx={{textTransform: 'none', fontFamily: 'Lora', fontWeight: '600'}} onClick={handleOpenActivityModal}>Add
+                                    sx={{textTransform: 'none', fontFamily: 'Lora', fontWeight: '600'}}
+                                    onClick={handleOpenActivityModal}>Add
                                 activity</Button>
 
                             {/*Add activity modal start*/}
@@ -520,13 +555,17 @@ export default function ShelterPage() {
                                             </Select>
                                         </FormControl>
                                         <Button
-                                                sx={{
-                                            textTransform: 'none',
-                                            margin: 'auto', mt: '20px', display: 'table-cell', verticalAlign: 'bottom',
-                                            fontFamily: 'Lora', fontWeight: '600'
-                                        }}
-                                                type="submit"
-                                                color="secondary" variant="contained"
+                                            sx={{
+                                                textTransform: 'none',
+                                                margin: 'auto',
+                                                mt: '20px',
+                                                display: 'table-cell',
+                                                verticalAlign: 'bottom',
+                                                fontFamily: 'Lora',
+                                                fontWeight: '600'
+                                            }}
+                                            type="submit"
+                                            color="secondary" variant="contained"
                                         >
                                             Submit
                                         </Button>
@@ -538,7 +577,8 @@ export default function ShelterPage() {
                         {/*Activity tabs*/}
                         <Box sx={{width: '100%', typography: 'body1'}}>
                             <TabContext value={valueTabs}>
-                                <TabList indicatorColor='secondary' textColor='secondary' onChange={handleChangeTabs} aria-label="lab API tabs">
+                                <TabList indicatorColor='secondary' textColor='secondary' onChange={handleChangeTabs}
+                                         aria-label="lab API tabs">
                                     {activities.map((activity) =>
                                         <Tab key={activity.id} label={activity.activityType} value={activity.id}/>
                                     )}

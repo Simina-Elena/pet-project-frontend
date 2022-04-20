@@ -2,11 +2,13 @@ import axios from "axios";
 import {authHeader, AuthService} from "pet-project-frontend-sharedcomponents";
 import {useEffect, useState} from "react";
 import MyAdoptionsTable from "../MyAdoptionsTable/MyAdoptionsTable";
+import {useToasts} from "react-toast-notifications";
 
 export default function Adoptions(props) {
-    const [loading, setLoading] = useState(true)
-    const [adoptions, setAdoptions] = useState([])
-    const [filteredAdoptions, setFilteredAdoptions] = useState([])
+    const [loading, setLoading] = useState(true);
+    const [adoptions, setAdoptions] = useState([]);
+    const [filteredAdoptions, setFilteredAdoptions] = useState([]);
+    const {addToast} = useToasts();
 
     const headCells = [
         {
@@ -37,7 +39,6 @@ export default function Adoptions(props) {
         return petName.charAt(0).toUpperCase() + petName.slice(1)
     }
 
-
     const handleSearchAdoption = (e) => {
         console.log(e.target.value)
         if (e.key === 'Enter')
@@ -45,13 +46,19 @@ export default function Adoptions(props) {
     }
 
     const handleAccept = async (id) => {
-        await axios.patch(`http://localhost:8080/api/adoptions/accept-adoption?adoptionId=${id}`, {}, {headers: authHeader()})
-        getAdoptions()
+        const {error} = await axios.patch(`http://localhost:8080/api/adoptions/accept-adoption?adoptionId=${id}`, {}, {headers: authHeader()})
+        if (error) {
+            addToast(error.message, {appearance: 'error', autoDismiss: true});
+        } else {
+            addToast('Adoption accepted', {appearance: 'success', autoDismiss: true})
+        }
+        await getAdoptions()
     }
 
     const handleDecline = async (id) => {
         await axios.patch(`http://localhost:8080/api/adoptions/decline-adoption?adoptionId=${id}`, {}, {headers: authHeader()})
-        getAdoptions()
+
+        await getAdoptions()
     }
 
     const handleDeleteAdoption = () => {
